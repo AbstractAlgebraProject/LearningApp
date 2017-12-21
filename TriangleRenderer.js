@@ -4,21 +4,25 @@ function TriangleRenderer() {
     var that = this
 
     that.date = new Date()
-    that.lastFrameTime = date.getTime() //epoch in ms
+    that.lastFrameTime = that.date.getTime() //epoch in ms
 
     that.renderPairs = [] //pairs of triangles to be rendered
 
-    that.addRenderPair(triangle, canvas) {
-        that.renderPairs.push((triangle, canvas))
+    that.addRenderPair = function(triangle, canvas) {
+        that.renderPairs.push({
+            tri : triangle,
+            canvas : canvas
+        })
     }
 
     that.renderPair = function(pair) {
-        var tri = pair[0]
-        var canvas = pair[1]
+        var tri = pair.tri
+        var canvas = pair.canvas
         var context = canvas.getContext('2d')
-        var frameTime = that.date.getTime()
+        var thisFrameTime = that.date.getTime()
 
-        tri.advanceAnimation(thisFrameTime-lastFrameTime);
+        tri.advanceAnimation(thisFrameTime-that.lastFrameTime);
+        that.lastFrameTime = thisFrameTime
 
         if(tri.segmented) { //drawing procedure for segmented triangle
             context.beginPath();
@@ -50,10 +54,10 @@ function TriangleRenderer() {
             context.fill();
         }
         if(tri.pointLabels) {
-            context.font('48px serif')
+            context.font = '48px serif'
             for (var i = 0; i < tri.anchorPoints.length; i++) {
                 point = tri.anchorPoints[i]
-                ctx.fillText(point[0], point[1], tri.ABCMap[i])
+                context.fillText(point[0], point[1], tri.ABCMap[i])
             }
         }
 
@@ -63,8 +67,10 @@ function TriangleRenderer() {
         //TODO rendering code
     }
 
-    that.render() {
-        for p in pairs:
-            that.renderPair(p)
+    that.render = function() {
+        for (p in that.renderPairs) {
+            that.renderPair(that.renderPairs[p])
+
+        }
     }
 }
