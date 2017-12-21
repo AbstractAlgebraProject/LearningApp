@@ -3,12 +3,12 @@
 function TriangleRenderer() {
     var that = this
 
-    that.date = new Date()
-    that.lastFrameTime = date.getTime() //epoch in ms
+    that.date = new Date();
+    that.lastFrameTime = this.date.getTime() //epoch in ms
 
     that.renderPairs = [] //pairs of triangles to be rendered
 
-    that.addRenderPair(triangle, canvas) {
+    that.addRenderPair= function(triangle, canvas) {
         that.renderPairs.push((triangle, canvas))
     }
 
@@ -63,8 +63,9 @@ function TriangleRenderer() {
         //TODO rendering code
     }
 
-    that.render() {
-        for p in pairs:
+    that.render = function() {
+        for(p in pairs){
             that.renderPair(p)
+          }
     }
 }

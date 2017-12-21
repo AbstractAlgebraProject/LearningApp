@@ -87,14 +87,14 @@ function TriangleFactory() {
             tri.segmentPoints.clear()
             center = (tri.x/2, tri.y/2, 0)  //center is in middle of canvas
             tri.anchorPoints.push(center)   //add center to anchorpoints array
-            for (var i = 1; i <= 3) {
+            for (var i = 1; i <= 3; i++) {
                 p = (
                     tri.radius * math.cos(2*pi/i),
                     tri.radius * math.sin(2*pi/i),
                     0
                 )
                 p = (
-                    p[0] + center[0]
+                    p[0] + center[0],
                     p[1] + center[1],
                     p[2] + center[2]
                 )
@@ -123,7 +123,7 @@ function TriangleFactory() {
 
         }
 
-        tri.rotateInstant3d(move, theta) {
+        tri.rotateInstant3d = function(move, theta) {
             var applyMatrix = function(array, matrix) {
                 for(var i = 0; i < array.length; i++) {
                     array[i]
