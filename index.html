@@ -9,10 +9,30 @@
         <script src="js/SymmetryAnalyze.js"></script>           <!--TriangleRenderer-->
         <script src="js/App.js"></script>
 
-        <div id="header">
-            <h1 class="title" id="pagetitle"></h1>
-        </div>
+        <link rel='stylesheet' href='style.css'>
+        <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet'>
 
+        <div id="header"></div>
+
+        <div id='playground'>
+          <div id='buttonContainer'>
+            <button id='rotateButton'>Rotate</button>
+            <button id='flipButton'>Flip</button>
+            <button id='resetButton'>Reset</button>
+            <button id='undoButton'>Undo</button>
+            <button id='saveButton'>Save</button>
+            <input type='text' id='angle' placeholder="Angle">
+          </div>
+
+          <div id='rightColumn'>
+            <div id='drawingArea'>
+              <canvas id='triangleArea'>
+              </canvas>
+            </div>
+
+            <div id='savedSymmetries'></div>
+          </div>
+        </div>
 
     </body>
 </html>
