@@ -3,7 +3,6 @@
 function TriangleRenderer() {
     var that = this
 
-<<<<<<< HEAD:js/TriangleRenderer.js
     that.date = new Date();
     that.lastFrameTime = this.date.getTime() //epoch in ms
 
@@ -11,18 +10,7 @@ function TriangleRenderer() {
 
     that.addRenderPair= function(triangle, canvas) {
         that.renderPairs.push((triangle, canvas))
-=======
-    that.date = new Date()
-    that.lastFrameTime = that.date.getTime() //epoch in ms
 
-    that.renderPairs = [] //pairs of triangles to be rendered
-
-    that.addRenderPair = function(triangle, canvas) {
-        that.renderPairs.push({
-            tri : triangle,
-            canvas : canvas
-        })
->>>>>>> e0db9adce6ab345219ae2f362bd034a5355cd398:TriangleRenderer.js
     }
 
     that.renderPair = function(pair) {
@@ -78,15 +66,10 @@ function TriangleRenderer() {
     }
 
     that.render = function() {
-<<<<<<< HEAD:js/TriangleRenderer.js
-        for(p in pairs){
-            that.renderPair(p)
-          }
-=======
+
         for (p in that.renderPairs) {
             that.renderPair(that.renderPairs[p])
 
         }
->>>>>>> e0db9adce6ab345219ae2f362bd034a5355cd398:TriangleRenderer.js
     }
 }
