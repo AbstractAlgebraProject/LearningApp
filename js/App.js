@@ -15,17 +15,59 @@ window.onload = function() {
 
     var manipulationCanvas = $("#triangleArea") //element that will hold the rotated/fliped triangle
     var triCanvas = document.getElementById('triangleArea');
+    triCanvas.width = document.getElementById('drawingArea').clientWidth;
+    triCanvas.height = document.getElementById('drawingArea').clientHeight;
+
     var ctx = triCanvas.getContext('2d');
+    var flipPoints = [{x: 0, y:0}, {x: 0, y:0}];
+    var flipLine = {p1: flipPoints[0], p2: flipPoints[1]};
+    var pointRadius = 10;
+    var pointIndex = 0;
 
     triCanvas.addEventListener('mousedown', function(e){
       var mousePos = getMousePos(triCanvas, e);
-      console.log(mousePos);
-      ctx.fillStyle = '#000000';
-      ctx.beginPath();
 
-      ctx.arc(mousePos.x, mousePos.y, 1 , 0, 2*Math.PI);
 
-      ctx.fill();
+      if(mode == 'rotate'){
+        ctx.clearRect(0, 0, triCanvas.width, triCanvas.height);     //clears canvas
+        ctx.beginPath();
+
+        ctx.fillStyle = '#5191f7';
+        ctx.arc(mousePos.x, mousePos.y, pointRadius , 0, 2*Math.PI);
+
+        ctx.fill();
+      }
+
+      else if(mode == 'flip'){
+        ctx.clearRect(0, 0, triCanvas.width, triCanvas.height);     //clears canvas
+
+        flipPoints[pointIndex].x = mousePos.x;
+        flipPoints[pointIndex].y = mousePos.y;
+        ctx.fillStyle = '#5191f7';
+        ctx.beginPath();
+
+        ctx.moveTo(flipLine.p1.x, flipLine.p1.y);
+        ctx.lineTo(flipLine.p2.x, flipLine.p2.y);
+
+        ctx.stroke();
+
+        for(i = 0; i < 2; i++){
+          var p = flipPoints[i];
+
+          ctx.beginPath();
+
+          ctx.fillStyle = '#5191f7';
+          ctx.arc(p.x, p.y, pointRadius, 0, 2*Math.PI);
+
+          ctx.fill();
+        }
+
+        pointIndex = (pointIndex == 0) ? pointIndex = 1 : pointIndex = 0;
+        console.log(pointIndex);
+      }
+
+
+      console.log(flipLine);
     });
     //triRenderer.addRenderPair(manipulationTriangle, manipulationCanvas); //set triangle and canvas set to be rendered
 
@@ -35,7 +77,7 @@ window.onload = function() {
       var rect = canvasDom.getBoundingClientRect();
 
       return {
-        x: mouseEvent.clientX - rect.left,
+        x: mouseEvent.clientX - rect.left,    //gets position relative to top-left corner of the canvas
         y: mouseEvent.clientY - rect.top
       };
     }
@@ -48,6 +90,12 @@ window.onload = function() {
 
     rotateButton.addEventListener('click', function(){
       mode = 'rotate';
+      
+      flipPoints[0].x = 0;
+      flipPoints[0].y = 0;
+      flipPoints[1].x = 0;
+      flipPoints[1].y = 0;
+
       rotateButton.style.opacity = 1;
       flipButton.style.opacity = .7;
     });
