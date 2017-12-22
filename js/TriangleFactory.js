@@ -1,22 +1,24 @@
 
 function TriangleFactory() {
     var tf = this;
-
+    tf.produced = 0
     //REQUIRED CONFIGURATION PROPERTIES
     //-- radius, x, y
     tf.produceTriangle = function(config) { //generates triangle object with specified properties
         var tri = this;
-
+        tf.produced += 1
         //TRIANGLE MEMBER VARIABLES
-
-        tri.timeBound = config.timeBound || False;   //whether the triangle will be animated
+        //TODO make this work with false goshdarn
+        tri.name = config.name || tf.produced;
+        tri.timeBound = config.timeBound || false;   //whether the triangle will be animated
         tri.moveQueue = []; //queued moves
         tri.animationSpeed = config.animationSpeed || 1000;  //time taken (inMS) for flip/rotate actions
         tri.radius = config.radius || 0;  //radius to define triangle size
         tri.baseColor = config.baseColor || "#0000000";//default color
         tri.segmentColors = config.segmentColors || ["#0000000", "#FFFFFFFF", "#696969"];
-        tri.segmented = config.segmented || true;    //whether the triangle will use the 3 segments for each corner
+        tri.segmented = config.segmented || false;    //whether the triangle will use the 3 segments for each corner
         tri.pointLabels = config.pointLabels || true;
+        tri.canvasSize = (config.x, config.y) || (0, 0)
 
         //---triangle point definitions---
         //anchor points are corners A,B,C, and center
@@ -32,7 +34,7 @@ function TriangleFactory() {
         }
 
         tri.reset = function() {
-            tri.moveQueue.clear()
+            tri.moveQueue = []
             tri.generatePoints()
         }
 
@@ -83,14 +85,14 @@ function TriangleFactory() {
         }
 
         tri.generatePoints = function() {
-            tri.anchorPoints.clear()
-            tri.segmentPoints.clear()
-            center = (tri.x/2, tri.y/2, 0)  //center is in middle of canvas
+            tri.anchorPoints = []
+            tri.segmentPoints = []
+            var center = (tri.canvasSize.x/2, tri.canvasSize.y/2, 0)  //center is in middle of canvas
             tri.anchorPoints.push(center)   //add center to anchorpoints array
             for (var i = 1; i <= 3; i++) {
                 p = (
-                    tri.radius * math.cos(2*pi/i),
-                    tri.radius * math.sin(2*pi/i),
+                    tri.radius * Math.cos(2*Math.PI/i),
+                    tri.radius * Math.sin(2*Math.PI/i),
                     0
                 )
                 p = (
@@ -105,7 +107,7 @@ function TriangleFactory() {
         tri.advanceAnimation = function(elapsedMS) {
             if(!tri.timeBound) {
                 ratio = elapsedMS/tri.animationSpeed    //how many complete rotations could occur in given elapsed time
-                radians = 2 * pi * rotation             //converting rotations to radians
+                radians = 2 * Math.PI * ratio             //converting rotations to radians
                 for (var i = 0; i < tri.moveQueue.length; i++) {
                     m = tri.moveQueue[i];   //get corresponding move
                     if (m.remaining > 0) {  //if the move is not done being animated
@@ -126,7 +128,7 @@ function TriangleFactory() {
         tri.rotateInstant3d = function(move, theta) {
             var applyMatrix = function(array, matrix) {
                 for(var i = 0; i < array.length; i++) {
-                    array[i]
+                    //TODO array[i]
                 }
             }
             matrix = [
@@ -140,7 +142,7 @@ function TriangleFactory() {
         }
 
         tri.toRadians = function(degrees) {
-            return degrees
+            return degrees * Math.PI/180
         }
     }
 }

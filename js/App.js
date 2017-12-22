@@ -11,9 +11,25 @@ window.onload = function() {
 
     var mode = '';
 
-    //var manipulationTriangle = triFactory.produceTriangle();    //triangle for canvas that will be manipulated
 
     var manipulationCanvas = $("#triangleArea") //element that will hold the rotated/fliped triangle
+
+    triConfig = {
+        name : "Test",
+        x : manipulationCanvas.width,
+        y : manipulationCanvas.height,
+        radius : 100,
+        segmented : false
+    }
+
+    var manipulationTriangle = new triFactory.produceTriangle(triConfig);    //triangle for canvas that will be manipulated
+    manipulationTriangle.reset()
+
+    triRenderer.addRenderPair(manipulationTriangle, manipulationCanvas); //set triangle and canvas set to be rendered
+
+    triRenderer.render()
+
+    //TODO move following manipulation code to ManipulationCanvasController.js, convert functions to use Jquery
     var triCanvas = document.getElementById('triangleArea');
     triCanvas.width = document.getElementById('drawingArea').clientWidth;
     triCanvas.height = document.getElementById('drawingArea').clientHeight;
@@ -69,7 +85,6 @@ window.onload = function() {
 
       console.log(flipLine);
     });
-    //triRenderer.addRenderPair(manipulationTriangle, manipulationCanvas); //set triangle and canvas set to be rendered
 
     var running = true;
 
@@ -90,7 +105,7 @@ window.onload = function() {
 
     rotateButton.addEventListener('click', function(){
       mode = 'rotate';
-      
+
       flipPoints[0].x = 0;
       flipPoints[0].y = 0;
       flipPoints[1].x = 0;
