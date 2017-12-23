@@ -10,7 +10,6 @@ function TriangleRenderer() {
 
     that.addRenderPair= function(triangle, canvas) {
         that.renderPairs.push({tri : triangle, canvas : canvas})
-
     }
 
     that.renderPair = function(pair) {
@@ -45,9 +44,9 @@ function TriangleRenderer() {
             context.fill();
         } else {    //drawing procedure for blank tri
             context.beginPath();
-            context.moveTo(tri.anchorPoints[0].x, tri.anchorPoints[0].y)
-            context.lineTo(tri.anchorPoints[1].x, tri.anchorPoints[1].y)
+            context.moveTo(tri.anchorPoints[1].x, tri.anchorPoints[1].y)
             context.lineTo(tri.anchorPoints[2].x, tri.anchorPoints[2].y)
+            context.lineTo(tri.anchorPoints[3].x, tri.anchorPoints[3].y)
             context.fillStyle = tri.baseColor;
             context.fill();
         }

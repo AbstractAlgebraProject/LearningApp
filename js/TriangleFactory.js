@@ -98,15 +98,17 @@ function TriangleFactory() {
             tri.anchorPoints.push(center)   //add center to anchorpoints array
             for (var i = 1; i <= 3; i++) {
                 var p = tf.point([
-                    tri.radius * Math.cos(i*2*Math.PI/3),
-                    tri.radius * Math.sin(i*2*Math.PI/3),
+                    tri.radius * Math.cos(i*2*Math.PI/3 - Math.PI/2),
+                    tri.radius * Math.sin(i*2*Math.PI/3 - Math.PI/2),
                     0
-                ])
+                ]);
                 p = [
                     p.x + center.x,
                     p.y + center.y,
                     p.z + center.z
-                ]
+                ];
+
+                console.log(p);
                 tri.anchorPoints.push(tf.point(p))
             }
         }

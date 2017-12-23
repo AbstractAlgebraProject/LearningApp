@@ -8,10 +8,8 @@ window.onload = function() {
     var manipulationCanvas = $("#triangleArea")[0] //element that will hold the rotated/fliped triangle
 
     //setting size based on calculated %properties in html
-    //TODO add size change handler to scale these with window size changes
     manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
     manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
-
 
 
     triConfig = {   //configuration for main triangle object (rotates and flips)
@@ -57,6 +55,10 @@ window.onload = function() {
       manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
       manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
       manipulationController.canvasBoundingRect = manipulationCanvas.getBoundingClientRect();
+
+      manipulationTriangle.anchorPoints[0] = {x: manipulationCanvas.width/2, y: manipulationCanvas.height/2, z: 0};
+
+      //TODO: make triangle scale position with canvas on resize
     };
 
     //rendering loop happens below
