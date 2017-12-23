@@ -61,7 +61,7 @@ function TriangleRenderer() {
 
 
 
-        console.log("Rendered Triangle: " + tri.name) //placeholder for testing
+      //  console.log("Rendered Triangle: " + tri.name) //placeholder for testing
     }
 
     that.render = function() {

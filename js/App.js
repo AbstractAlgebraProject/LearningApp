@@ -12,6 +12,8 @@ window.onload = function() {
     manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
     manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
 
+
+
     triConfig = {   //configuration for main triangle object (rotates and flips)
         name : "Test",
         x : manipulationCanvas.width,
@@ -50,11 +52,12 @@ window.onload = function() {
         flipButton.style.opacity = .7;
     });
 
-    //have to resize the canvases when window changes
-    window.addEventListener('resize', function() { //TODO make resize thing actually work
-        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
-        manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
-    })
+    //whenever the window resizes, change the width, height, and position of canvas
+    $('body')[0].onresize = function(){
+      manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
+      manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
+      manipulationController.canvasBoundingRect = manipulationCanvas.getBoundingClientRect();
+    };
 
     //rendering loop happens below
     function render() {
