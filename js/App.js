@@ -2,19 +2,17 @@
 
 window.onload = function() {
     var that = this;
-    //button hookups
-    //var triFactory = new TriangleFactory();
-  //  var triRenderer = new TriangleRenderer();
+    var triFactory = new TriangleFactory();
+    var triRenderer = new TriangleRenderer();
 
-    var flipButton = document.getElementById("flipButton");
-    var rotateButton = document.getElementById("rotateButton");
+    var manipulationCanvas = $("#triangleArea")[0] //element that will hold the rotated/fliped triangle
 
-    var mode = '';
+    //setting size based on calculated %properties in html
+    //TODO add size change handler to scale these with window size changes
+    manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
+    manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
 
-
-    var manipulationCanvas = $("#triangleArea") //element that will hold the rotated/fliped triangle
-
-    triConfig = {
+    triConfig = {   //configuration for main triangle object (rotates and flips)
         name : "Test",
         x : manipulationCanvas.width,
         y : manipulationCanvas.height,
@@ -27,92 +25,44 @@ window.onload = function() {
 
     triRenderer.addRenderPair(manipulationTriangle, manipulationCanvas); //set triangle and canvas set to be rendered
 
-    triRenderer.render()
 
-    //TODO move following manipulation code to ManipulationCanvasController.js, convert functions to use Jquery
-    var triCanvas = document.getElementById('triangleArea');
-    triCanvas.width = document.getElementById('drawingArea').clientWidth;
-    triCanvas.height = document.getElementById('drawingArea').clientHeight;
+    //initializing controller that manages positioning and drawing of flip and rotate points
+    var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
-    var ctx = triCanvas.getContext('2d');
-    var flipPoints = [{x: 0, y:0}, {x: 0, y:0}];
-    var flipLine = {p1: flipPoints[0], p2: flipPoints[1]};
-    var pointRadius = 10;
-    var pointIndex = 0;
-
-    triCanvas.addEventListener('mousedown', function(e){
-      var mousePos = getMousePos(triCanvas, e);
-
-
-      if(mode == 'rotate'){
-        ctx.clearRect(0, 0, triCanvas.width, triCanvas.height);     //clears canvas
-        ctx.beginPath();
-
-        ctx.fillStyle = '#5191f7';
-        ctx.arc(mousePos.x, mousePos.y, pointRadius , 0, 2*Math.PI);
-
-        ctx.fill();
-      }
-
-      else if(mode == 'flip'){
-        ctx.clearRect(0, 0, triCanvas.width, triCanvas.height);     //clears canvas
-
-        flipPoints[pointIndex].x = mousePos.x;
-        flipPoints[pointIndex].y = mousePos.y;
-        ctx.fillStyle = '#5191f7';
-        ctx.beginPath();
-
-        ctx.moveTo(flipLine.p1.x, flipLine.p1.y);
-        ctx.lineTo(flipLine.p2.x, flipLine.p2.y);
-
-        ctx.stroke();
-
-        for(i = 0; i < 2; i++){
-          var p = flipPoints[i];
-
-          ctx.beginPath();
-
-          ctx.fillStyle = '#5191f7';
-          ctx.arc(p.x, p.y, pointRadius, 0, 2*Math.PI);
-
-          ctx.fill();
-        }
-
-        pointIndex = (pointIndex == 0) ? pointIndex = 1 : pointIndex = 0;
-        console.log(pointIndex);
-      }
-
-
-      console.log(flipLine);
+    //event callbacks
+    $("#triangleArea").mousedown(function(e){
+        manipulationController.mouseListener(e)
     });
 
-    var running = true;
+    $("#flipButton").click(function(){
+        var flipButton = this;
+        manipulationController.setMode('flip');
 
-    function getMousePos(canvasDom, mouseEvent) {
-      var rect = canvasDom.getBoundingClientRect();
+        flipButton.style.opacity = 1;
+        rotateButton.style.opacity = .7;
+    });
 
-      return {
-        x: mouseEvent.clientX - rect.left,    //gets position relative to top-left corner of the canvas
-        y: mouseEvent.clientY - rect.top
-      };
+    $("#rotateButton").click(function(){
+        var rotateButton = this;
+        manipulationController.setMode('rotate');
+
+        rotateButton.style.opacity = 1;
+        flipButton.style.opacity = .7;
+    });
+
+    //have to resize the canvases when window changes
+    window.addEventListener('resize', function() { //TODO make resize thing actually work
+        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
+        manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
+    })
+
+    //rendering loop happens below
+    function render() {
+        window.requestAnimationFrame(render);
+        manipulationCanvas.getContext('2d').clearRect(0, 0, manipulationCanvas.width, manipulationCanvas.height);     //clears canvas
+        triRenderer.render()
+        manipulationController.render()
+
     }
-
-    flipButton.addEventListener('click', function(){
-      mode = 'flip';
-      flipButton.style.opacity = 1;
-      rotateButton.style.opacity = .7;
-    });
-
-    rotateButton.addEventListener('click', function(){
-      mode = 'rotate';
-
-      flipPoints[0].x = 0;
-      flipPoints[0].y = 0;
-      flipPoints[1].x = 0;
-      flipPoints[1].y = 0;
-
-      rotateButton.style.opacity = 1;
-      flipButton.style.opacity = .7;
-    });
-
+    render()
 }
