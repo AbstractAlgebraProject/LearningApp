@@ -57,8 +57,8 @@ window.onload = function() {
       manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
       manipulationController.canvasBoundingRect = manipulationCanvas.getBoundingClientRect();
 
-      manipulationTriangle.anchorPoints[0] = {x: manipulationCanvas.width/2, y: manipulationCanvas.height/2, z: 0};
-
+      //manipulationTriangle.anchorPoints[0] = {x: manipulationCanvas.width/2, y: manipulationCanvas.height/2, z: 0};
+      manipulationTriangle.translate(util.subtract(util.toPoint([manipulationCanvas.width/2, manipulationCanvas.height/2, 0]), tri.anchorPoints[0]))
       //TODO: make triangle scale position with canvas on resize
     };
 

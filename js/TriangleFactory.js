@@ -48,18 +48,17 @@ function TriangleFactory() {
         //rotates triangle specified angle in degrees or radians, adding to moveQueue
         tri.rotate = function(angle, point, radians=false) {
             var move = {
-                radians : angle,
-                p1 : tf.point([point[0], point[1], -1]), //defining rotation axis on z
-                p2 : tf.point([point[1], point[1], 1]),
-                u : tf.point([0, 0, 0]),
-                complete : false
+                p1 : utils.toPoint([point[0], point[1], -1]), //defining rotation axis on z
+                p2 : utils.toPoint([point[1], point[1], 1]),
+                u : utils.toPoint([0, 0, 0]),    //unit vector corresponding to axis through center
+                remaining : 2*Math.PI //radians remaining before move completion
             }
-            move.u = normalize(move.p1, move.p2)
+            move.u = utils.normalize(move.p1, move.p2)
 
             if(!radians) move.radians = toRadians(angle)    //converting angle to raidans
             if(!timeBound) {
                 tri.rotateInstant(radians, point, radians);
-                move.complete = true;
+                move.remaining = 0;
             }
             tri.moveQueue.push(move)
 
@@ -68,15 +67,13 @@ function TriangleFactory() {
         //flips triangle across line, adding to move Queue
         tri.flip = function(point1, point2) {
             var move = {
-                radians : angle,
-                p1 : (point1[0], point1[1], 0), //defining rotation axis on xy
-                p2 : (point2[1], point2[1], 0),
-                u : (0, 0, 0),                  //unit vector corresponding to rotation axis
-                remaining : false               //remaining
+                p1 : utils.toPoint([point1[0], point1[1], 0]), //defining rotation axis on xy
+                p2 : utils.toPoint([point2[1], point2[1], 0]),
+                u : utils.toPoint([0, 0, 0]),                  //unit vector corresponding to rotation axis
+                remaining : Math.PI               //radians remaining in move
             }
-            move.u = normalize(move.p1, move.p2)
+            move.u = utils.normalize(move.p1, move.p2)
 
-            if(!radians) move.radians = toRadians(angle)
             if(!timeBound) {
                 tri.rotateInstant(radians, point, radians);
                 move.remaining = 0;
@@ -86,15 +83,24 @@ function TriangleFactory() {
 
         //utility functions
         tri.normalize = function(p1, p2) {  //simple normalization to find unit vector of two points
-            diff = [p1[0] - p2[0], p1[1] - p2[1], p1[2] - p2[2]]
-            mag = pow((pow(diff[0], 2) + pow(diff[1], 2) + pow(diff[2], 2)), .5) //magnitude of 3d vector
+            var diff = [p1[0] - p2[0], p1[1] - p2[1], p1[2] - p2[2]]
+            var mag = pow((pow(diff[0], 2) + pow(diff[1], 2) + pow(diff[2], 2)), .5) //magnitude of 3d vector
             return tf.point([diff[0]/mag, diff[1]/mag, diff[2]/mag])
+        }
+
+        tri.translate = function(vector) {
+            for(point in tri.anchorPoints) {
+                utils.subtract(tri.anchorPoints[i], vector)
+            }
+            for(point in tri.segmentPoints) {
+                utils.subtract(tri.segmentPoints[i], vector)
+            }
         }
 
         tri.generatePoints = function() {
             tri.anchorPoints = []
             tri.segmentPoints = []
-            var center = tf.point([tri.canvasSize.x/2, tri.canvasSize.y/2, 0])  //center is in middle of canvas
+            tri.center = tf.point([tri.canvasSize.x/2, tri.canvasSize.y/2, 0])  //center is in middle of canvas
             tri.anchorPoints.push(center)   //add center to anchorpoints array
             for (var i = 1; i <= 3; i++) {
                 var p = tf.point([
