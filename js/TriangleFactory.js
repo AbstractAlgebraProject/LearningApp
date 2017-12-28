@@ -155,11 +155,65 @@ function TriangleFactory() {
                     //TODO array[i]
                 }
             }
-            matrix = [
-                [0, 0, 0]
-                [0, 0, 0]
-                [0, 0, 0]
+            var animationPoints = tri.anchorPoints;
+            var c = animationPoints[0]
+            var translation = [
+                [1, 0, 0, c.x],
+                [0, 1, 0, c.y],
+                [0, 0, 1, c.z],
+                [0, 0, 0, 1]
             ]
+
+            var angles = utils.scale(move.u, theta)
+            var trig = {
+                x : {
+                    sin : Math.sin(angles[0]),
+                    cos : Math.cos(angles[0])
+                },
+                y : {
+                    sin : Math.sin(angles[1]),
+                    cos : Math.cos(angles[1])
+                },
+                z : {
+                    sin : Math.sin(angles[2]),
+                    cos : Math.cos(angles[2])
+                }
+            }
+            var rotXSpace = [
+                [1, 0           , 0             , 0]
+                [0, trig.x.cos  , -trig.x.sin   , 0]
+                [0, trig.x.sin  , trig.x.cos    , 0]
+                [0, 0           , 0             , 1]
+            ]
+            var rotYSpace = [
+                [trig.y.cos , 0, trig.y.sin, 0],
+                [0          , 1, 0         , 0],
+                [-trig.y.sin, 0, trig.y.cos, 0],
+                [0          , 0, 0         , 1]
+            ]
+            var rotZ = [
+                [trig.z.cos ,  -trig.z.sin, 0, 0],
+                [trig.z.sin ,   trig.z.cos, 0, 0],
+                [0          , 0           , 1, 0],
+                [0          , 0           , 0, 1]
+            ]
+            var identity = [
+                [1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]
+            ]
+
+            operationArray = [translation, rotXSpace, rotYSpace, rotZ, inv(rotYSpace), inv(rotZSpace), inv(translation)]
+            operationMatrix = identity
+            for(matrix in operationArray ){
+                operationMatrix = utils.matrixMultiply(operationMatrix, operationArray[matrix])
+            }
+            //translate to origin
+            for(point in animationPoints) {
+                animationPoints[point] = utils.matrixMultiply(animationPoints[point], operationArray)
+            }
+
             //http://paulbourke.net/geometry/rotate/
             //TODO implement rotation matrices
             console.log("rotated ", tri.name, " by ",theta, " radians on ", move.u)

@@ -52,5 +52,17 @@ var utils = {
 
         console.log("Multiplied Matrices: ",  p);
         return utils.toPoint(p);
+    },
+    
+    invertMatrix: function(matrix) {
+        var inv = matrix
+        for(r in matrix) {
+            for(c in matrix[r]){
+                if( r != c) {
+                    inv[r][c] *= -1
+                }
+            }
+        }
+        return inv
     }
 }
