@@ -42,19 +42,40 @@ var utils = {
 
     multiply: function(point, matrix){
         var p = [0, 0, 0, 0];
-        var pointArray = utils.toArray(point);
 
         for(var i = 0; i < 4; i++){
             for(var j = 0; j < 4; j++){
-                p[i] += pointArray[j] * matrix[j][i];
+                p[i] += point[j] * matrix[j][i];
             }
         }
 
         console.log("Multiplied Matrices: ",  p);
         return utils.toPoint(p);
     },
-    
-    invertMatrix: function(matrix) {
+
+    dot4: function(arr1, arr2){
+        return arr1[0]*arr2[0] + arr1[1]*arr2[1] + arr1[2]*arr2[2] +arr1[3]*arr2[3];
+    },
+
+    multiply4: function(mat1, mat2){
+        var result = [
+            [0,0,0,0],
+            [0,0,0,0],
+            [0,0,0,0],
+            [0,0,0,0]
+        ];
+
+        for(var i = 0; i < 4; i++){
+            for(var j = 0; j < 4; j++){
+                result[i][j] = utils.dot4(mat1[i], [mat2[0][j], mat2[1][j], mat2[2][j], mat2[3][j]]);
+            }
+        }
+
+        console.log("Multiplied 4x4 Matrices: ", result);
+        return result;
+    },
+
+    inv: function(matrix) {
         var inv = matrix
         for(r in matrix) {
             for(c in matrix[r]){

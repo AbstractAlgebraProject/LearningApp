@@ -3,8 +3,8 @@
 function TriangleRenderer() {
     var that = this
 
-    that.date = new Date();
-    that.lastFrameTime = this.date.getTime() //epoch in ms
+    var date = new Date();
+    that.lastFrameTime = date.getTime() //epoch in ms
 
     that.renderPairs = [] //pairs of triangles to be rendered
 
@@ -16,7 +16,8 @@ function TriangleRenderer() {
         var tri = pair.tri
         var canvas = pair.canvas
         var context = canvas.getContext('2d')
-        var thisFrameTime = that.date.getTime()
+        var newDate = new Date();
+        var thisFrameTime = newDate.getTime()
 
         tri.advanceAnimation(thisFrameTime-that.lastFrameTime);
         that.lastFrameTime = thisFrameTime

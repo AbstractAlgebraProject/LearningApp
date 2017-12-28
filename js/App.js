@@ -11,13 +11,29 @@ window.onload = function() {
     manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
     manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
 
+    var test1 = [
+        [1,2,3,4],
+        [5,6,7,8],
+        [9,10,11,12],
+        [13,14,15,16]
+    ];
+
+    var test2 = [
+        [3,3,3,3],
+        [3,3,3,3],
+        [3,3,3,3],
+        [3,3,3,3]
+    ];
+
+    utils.multiply4(test1, test2);
 
     triConfig = {   //configuration for main triangle object (rotates and flips)
         name : "Test",
         x : manipulationCanvas.width,
         y : manipulationCanvas.height,
         radius : 100,
-        segmented : true
+        segmented : true,
+        timeBound: true
     }
 
     var manipulationTriangle = new triFactory.produceTriangle(triConfig);    //triangle for canvas that will be manipulated
@@ -65,7 +81,7 @@ window.onload = function() {
     $("#rotateButton").click(function(){
         var rotatePoint = manipulationController.rotatePoint;
         flipButton.style.webkitAnimationName = 'none';
-        
+
         if(manipulationController.mode === 'rotate'){
             manipulationTriangle.rotate(angle, rotatePoint);
         }

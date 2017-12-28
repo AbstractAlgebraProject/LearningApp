@@ -48,13 +48,13 @@ function TriangleFactory() {
                 p1 : [point.x, point.y, -1], //defining rotation axis on z
                 p2 : [point.x, point.y, 1],
                 u : [0, 0, 0],    //unit vector corresponding to axis through center
-                remaining : 2*Math.PI //radians remaining before move completion
+                remaining : angle //radians remaining before move completion
             }
             move.u = utils.normalize(move.p1, move.p2)
 
-            if(!radians) move.radians = tri.toRadians(angle)    //converting angle to raidans
+            if(!radians) move.remaining = tri.toRadians(angle)    //converting angle to raidans
             if(!tri.timeBound) {
-                tri.rotateInstant3d(radians, point, radians);
+                tri.rotateInstant3d(move, move.remaining);
                 move.remaining = 0;
             }
             tri.moveQueue.push(move)
@@ -164,25 +164,26 @@ function TriangleFactory() {
                 [0, 0, 0, 1]
             ]
 
-            var angles = utils.scale(move.u, theta)
+            var angles = utils.scale(theta, move.u);
+
             var trig = {
                 x : {
-                    sin : Math.sin(angles[0]),
-                    cos : Math.cos(angles[0])
+                    sin : Math.sin(angles.x),
+                    cos : Math.cos(angles.x)
                 },
                 y : {
-                    sin : Math.sin(angles[1]),
-                    cos : Math.cos(angles[1])
+                    sin : Math.sin(angles.y),
+                    cos : Math.cos(angles.y)
                 },
                 z : {
-                    sin : Math.sin(angles[2]),
-                    cos : Math.cos(angles[2])
+                    sin : Math.sin(angles.z),
+                    cos : Math.cos(angles.z)
                 }
             }
             var rotXSpace = [
-                [1, 0           , 0             , 0]
-                [0, trig.x.cos  , -trig.x.sin   , 0]
-                [0, trig.x.sin  , trig.x.cos    , 0]
+                [1, 0           , 0             , 0],
+                [0, trig.x.cos  , -trig.x.sin   , 0],
+                [0, trig.x.sin  , trig.x.cos    , 0],
                 [0, 0           , 0             , 1]
             ]
             var rotYSpace = [
@@ -204,14 +205,16 @@ function TriangleFactory() {
                 [0, 0, 0, 1]
             ]
 
-            operationArray = [translation, rotXSpace, rotYSpace, rotZ, inv(rotYSpace), inv(rotZSpace), inv(translation)]
-            operationMatrix = identity
+            var operationArray = [translation, rotXSpace, rotYSpace, rotZ, utils.inv(rotYSpace), utils.inv(rotZ), utils.inv(translation)];
+            var operationMatrix = identity;
             for(matrix in operationArray ){
-                operationMatrix = utils.matrixMultiply(operationMatrix, operationArray[matrix])
+                operationMatrix = utils.multiply4(operationMatrix, operationArray[matrix]);
             }
             //translate to origin
             for(point in animationPoints) {
-                animationPoints[point] = utils.matrixMultiply(animationPoints[point], operationArray)
+                animationPoints[point] = utils.toArray(animationPoints[point])
+                animationPoints[point].push(1)
+                animationPoints[point] = utils.multiply(animationPoints[point], operationMatrix)
             }
 
             //http://paulbourke.net/geometry/rotate/
