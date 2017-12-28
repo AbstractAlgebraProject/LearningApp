@@ -78,10 +78,10 @@ function TriangleFactory() {
 
         tri.translate = function(vector) {
             for(point in tri.anchorPoints) {
-                tri.anchorPoints[point] = utils.subtract(tri.anchorPoints[point], vector)
+                tri.anchorPoints[point] = utils.add(tri.anchorPoints[point], vector)
             }
             for(point in tri.segmentPoints) {
-                tri.segmentPoints[point] = utils.subtract(tri.segmentPoints[point], vector)
+                tri.segmentPoints[point] = utils.add(tri.segmentPoints[point], vector)
             }
         }
 
@@ -199,7 +199,7 @@ function TriangleFactory() {
                 [0, 0, 1, 0],
                 [0, 0, 0, 1]
             ]
-            
+
             operationArray = [translation, rotXSpace, rotYSpace, rotZ, inv(rotYSpace), inv(rotZSpace), inv(translation)]
             operationMatrix = identity
             for matrix in operationArray {
