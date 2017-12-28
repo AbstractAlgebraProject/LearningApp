@@ -24,5 +24,17 @@ var utils = {
         diff = [p1[0] - p2[0], p1[1] - p2[1], p1[2] - p2[2]]
         mag = pow((pow(diff[0], 2) + pow(diff[1], 2) + pow(diff[2], 2)), .5) //magnitude of 3d vector
         return tf.point([diff[0]/mag, diff[1]/mag, diff[2]/mag])
+    },
+
+    invertMatrix: function(matrix) {
+        var inv = matrix
+        for(r in matrix) {
+            for(c in matrix[r]){
+                if( r != c) {
+                    inv[r][c] *= -1
+                }
+            }
+        }
+        return inv
     }
 }
