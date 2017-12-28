@@ -21,7 +21,7 @@ function TriangleFactory() {
         tri.moveQueue = []; //queued moves
         tri.animationSpeed = config.animationSpeed || 1000;  //time taken (inMS) for flip/rotate actions
         tri.radius = config.radius || 0;  //radius to define triangle size
-        tri.baseColor = config.baseColor || "#0000000";//default color
+        tri.baseColor = config.baseColor || "#CCCCCCC";//default color
         tri.segmentColors = config.segmentColors || ["#0000000", "#FFFFFFFF", "#696969"];
         tri.segmented = config.segmented || false;    //whether the triangle will use the 3 segments for each corner
         tri.pointLabels = config.pointLabels || true;
@@ -114,20 +114,30 @@ function TriangleFactory() {
         }
 
         tri.advanceAnimation = function(elapsedMS) {
-            if(!tri.timeBound) {
-                ratio = elapsedMS/tri.animationSpeed    //how many complete rotations could occur in given elapsed time
-                radians = 2 * Math.PI * ratio             //converting rotations to radians
+            if(tri.timeBound) {
+                var ratio = elapsedMS/tri.animationSpeed    //how many complete rotations could occur in given elapsed time
+                var radians = 2 * Math.PI * ratio             //converting rotations to radians
                 for (var i = 0; i < tri.moveQueue.length; i++) {
-                    m = tri.moveQueue[i];   //get corresponding move
+                    var m = tri.moveQueue[i];   //get corresponding move
                     if (m.remaining > 0) {  //if the move is not done being animated
                         if (m.remaining >= radians) {
-                            tri.rotateInstand3d(m, radians)
+                            tri.rotateInstant3d(m, radians)
                             m.remaining -= radians
+                            radians = 0
                         } else {
                             tri.rotateInstant3d(m, m.remaining)
                             radians -= m.remaining
                             m.remaining = 0
                         }
+                    if (radians <= 0){
+                        break;
+                    }
+                }
+            } else {
+                for (var i = 0; i < tri.moveQueue.length; i++) {
+                    var m = tri.moveQueue[i];   //get corresponding move
+                    if (m.remaining > 0) {  //if the move is not done, do it
+                        tri.rotateInstant3d(m, m.remaining)
                     }
                 }
             }
