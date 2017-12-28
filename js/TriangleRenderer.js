@@ -24,22 +24,28 @@ function TriangleRenderer() {
         if(tri.segmented) { //drawing procedure for segmented triangle
             context.beginPath();
             context.moveTo(tri.anchorPoints[0].x, tri.anchorPoints[0].y);
-            context.lineTo(tri.anchorPoints[3].x, tri.anchorPoints[3].y); //center
-            context.lineTo(tri.segmentPoints[1].x, tri.anchorPoints[1].y); //center
+            context.lineTo(tri.segmentPoints[2].x,
+            tri.segmentPoints[2].y);
+            context.lineTo(tri.anchorPoints[1].x, tri.anchorPoints[1].y); //center
+            context.lineTo(tri.segmentPoints[0].x, tri.segmentPoints[0].y); //center
             context.fillStyle = tri.segmentColors[0];
             context.fill();
 
             context.beginPath();
-            context.moveTo(tri.anchorPoints[1].x, tri.anchorPoints[1].y);
-            context.lineTo(tri.anchorPoints[3].x, tri.anchorPoints[3].y);  //center
-            context.lineTo(tri.segmentPoints[1].x, tri.anchorPoints[1].y);  //center
+            context.moveTo(tri.anchorPoints[0].x, tri.anchorPoints[0].y);
+            context.lineTo(tri.segmentPoints[0].x,
+            tri.segmentPoints[0].y);
+            context.lineTo(tri.anchorPoints[2].x, tri.anchorPoints[2].y);  //center
+            context.lineTo(tri.segmentPoints[1].x, tri.segmentPoints[1].y);  //center
             context.fillStyle = tri.segmentColors[1];
             context.fill();
 
             context.beginPath();
-            context.moveTo(tri.anchorPoints[2].x, tri.anchorPoints[2].y)
+            context.moveTo(tri.anchorPoints[0].x, tri.anchorPoints[0].y)
+            context.lineTo(tri.segmentPoints[1].x,
+            tri.segmentPoints[1].y);
             context.lineTo(tri.anchorPoints[3].x, tri.anchorPoints[3].y)  //center
-            context.lineTo(tri.segmentPoints[2].x, tri.anchorPoints[2].y)  //center
+            context.lineTo(tri.segmentPoints[2].x, tri.segmentPoints[2].y)  //center
             context.fillStyle = tri.segmentColors[2];
             context.fill();
         } else {    //drawing procedure for blank tri

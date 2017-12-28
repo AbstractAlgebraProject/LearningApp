@@ -17,7 +17,7 @@ window.onload = function() {
         x : manipulationCanvas.width,
         y : manipulationCanvas.height,
         radius : 100,
-        segmented : false
+        segmented : true
     }
 
     var manipulationTriangle = new triFactory.produceTriangle(triConfig);    //triangle for canvas that will be manipulated
