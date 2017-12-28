@@ -13,7 +13,8 @@ function ManipulationCanvasController(canvas) {
     that.flipLine = {p1: that.flipPoints[0], p2: that.flipPoints[1]};
     that.pointRadius = 10;
     that.pointIndex = 0;
-    that.fillColor = '#5191f7'
+    that.fillColorRotate = '#5191f7'
+    that.filleColorFlip = '#5191f7'
 
     //mode ("rotate" or "flip")
     that.mode = ""
@@ -38,7 +39,7 @@ function ManipulationCanvasController(canvas) {
     that.mouseListener = function(e) {
         var mousePos = that.getMousePos(e); //get position of mouse relative to the canvas
         console.log(mousePos);
-        
+
         if(that.mode == 'rotate'){
           that.rotatePoint = mousePos   //define the rotation point at clicked mouse position
         }
@@ -58,14 +59,14 @@ function ManipulationCanvasController(canvas) {
 
         if(that.mode == "rotate") {
             //drawing single point that defines axis of rotation
-            ctx.fillStyle = that.fillColor;
+            ctx.fillStyle = that.rotateFillColor;
             ctx.beginPath();
             ctx.arc(that.rotatePoint.x, that.rotatePoint.y, that.pointRadius , 0, 2*Math.PI);
             ctx.fill();
         }
         if(that.mode == "flip") {
             //drawing line between flip points
-            ctx.fillStyle = that.fillColor;
+            ctx.fillStyle = that.flipFillColor;
             ctx.beginPath();
             ctx.moveTo(that.flipLine.p1.x, that.flipLine.p1.y);
             ctx.lineTo(that.flipLine.p2.x, that.flipLine.p2.y);
@@ -75,7 +76,7 @@ function ManipulationCanvasController(canvas) {
             for(i = 0; i < 2; i++){
               var p = that.flipPoints[i];
 
-              ctx.fillStyle = that.fillColor;
+              ctx.fillStyle = that.flipFillColor;
               ctx.beginPath();
               ctx.arc(p.x, p.y, that.pointRadius, 0, 2*Math.PI);
               ctx.fill();

@@ -43,18 +43,17 @@ function TriangleFactory() {
         //rotates triangle specified angle in degrees or radians, adding to moveQueue
         tri.rotate = function(angle, point, radians=false) {
             var move = {
-                radians : angle,
-                p1 : tf.point([point[0], point[1], -1]), //defining rotation axis on z
-                p2 : tf.point([point[1], point[1], 1]),
-                u : tf.point([0, 0, 0]),
-                complete : false
+                p1 : utils.toPoint([point[0], point[1], -1]), //defining rotation axis on z
+                p2 : utils.toPoint([point[1], point[1], 1]),
+                u : utils.toPoint([0, 0, 0]),    //unit vector corresponding to axis through center
+                remaining : 2*Math.PI //radians remaining before move completion
             }
-            move.u = normalize(move.p1, move.p2)
+            move.u = utils.normalize(move.p1, move.p2)
 
             if(!radians) move.radians = toRadians(angle)    //converting angle to raidans
             if(!timeBound) {
                 tri.rotateInstant(radians, point, radians);
-                move.complete = true;
+                move.remaining = 0;
             }
             tri.moveQueue.push(move)
 
@@ -63,20 +62,27 @@ function TriangleFactory() {
         //flips triangle across line, adding to move Queue
         tri.flip = function(point1, point2) {
             var move = {
-                radians : angle,
-                p1 : (point1[0], point1[1], 0), //defining rotation axis on xy
-                p2 : (point2[1], point2[1], 0),
-                u : (0, 0, 0),                  //unit vector corresponding to rotation axis
-                remaining : false               //remaining
+                p1 : utils.toPoint([point1[0], point1[1], 0]), //defining rotation axis on xy
+                p2 : utils.toPoint([point2[1], point2[1], 0]),
+                u : utils.toPoint([0, 0, 0]),                  //unit vector corresponding to rotation axis
+                remaining : Math.PI               //radians remaining in move
             }
-            move.u = normalize(move.p1, move.p2)
+            move.u = utils.normalize(move.p1, move.p2)
 
-            if(!radians) move.radians = toRadians(angle)
             if(!timeBound) {
                 tri.rotateInstant(radians, point, radians);
                 move.remaining = 0;
             }
             tri.moveQueue.push(move)
+        }
+
+        tri.translate = function(vector) {
+            for(point in tri.anchorPoints) {
+                utils.subtract(tri.anchorPoints[point], vector)
+            }
+            for(point in tri.segmentPoints) {
+                utils.subtract(tri.segmentPoints[point], vector)
+            }
         }
 
         tri.generatePoints = function() {
@@ -109,26 +115,34 @@ function TriangleFactory() {
 
         tri.advanceAnimation = function(elapsedMS) {
             if(tri.timeBound) {
-                ratio = elapsedMS/tri.animationSpeed    //how many complete rotations could occur in given elapsed time
-
-
-
-                radians = 2 * Math.PI * ratio             //converting rotations to radians
+                var ratio = elapsedMS/tri.animationSpeed    //how many complete rotations could occur in given elapsed time
+                var radians = 2 * Math.PI * ratio             //converting rotations to radians
                 for (var i = 0; i < tri.moveQueue.length; i++) {
-                    m = tri.moveQueue[i];   //get corresponding move
+                    var m = tri.moveQueue[i];   //get corresponding move
                     if (m.remaining > 0) {  //if the move is not done being animated
                         if (m.remaining >= radians) {
-                            tri.rotateInstand3d(m, radians)
+                            tri.rotateInstant3d(m, radians)
                             m.remaining -= radians
+                            radians = 0
                         } else {
                             tri.rotateInstant3d(m, m.remaining)
                             radians -= m.remaining
                             m.remaining = 0
                         }
+                        if (radians <= 0){
+                            break;
+                        }
                     }
                 }
             }
-
+            else {
+                for (var i = 0; i < tri.moveQueue.length; i++) {
+                    var m = tri.moveQueue[i];   //get corresponding move
+                    if (m.remaining > 0) {  //if the move is not done, do it
+                        tri.rotateInstant3d(m, m.remaining)
+                    }
+                }
+            }
         }
 
         tri.rotateInstant3d = function(move, theta) {

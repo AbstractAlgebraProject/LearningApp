@@ -22,6 +22,7 @@ function TriangleRenderer() {
         that.lastFrameTime = thisFrameTime
 
         if(tri.segmented) { //drawing procedure for segmented triangle
+            context.fillStyle = tri.segmentColors[0];
             context.beginPath();
             context.moveTo(tri.anchorPoints[0].x, tri.anchorPoints[0].y);
             context.lineTo(tri.segmentPoints[2].x,
@@ -31,6 +32,7 @@ function TriangleRenderer() {
             context.fillStyle = tri.segmentColors[0];
             context.fill();
 
+            context.fillStyle = tri.segmentColors[1];
             context.beginPath();
             context.moveTo(tri.anchorPoints[0].x, tri.anchorPoints[0].y);
             context.lineTo(tri.segmentPoints[0].x,
@@ -40,6 +42,7 @@ function TriangleRenderer() {
             context.fillStyle = tri.segmentColors[1];
             context.fill();
 
+            context.fillStyle = tri.segmentColors[2];
             context.beginPath();
             context.moveTo(tri.anchorPoints[0].x, tri.anchorPoints[0].y)
             context.lineTo(tri.segmentPoints[1].x,
@@ -49,11 +52,11 @@ function TriangleRenderer() {
             context.fillStyle = tri.segmentColors[2];
             context.fill();
         } else {    //drawing procedure for blank tri
+            context.fillStyle = tri.baseColor;
             context.beginPath();
             context.moveTo(tri.anchorPoints[1].x, tri.anchorPoints[1].y)
             context.lineTo(tri.anchorPoints[2].x, tri.anchorPoints[2].y)
             context.lineTo(tri.anchorPoints[3].x, tri.anchorPoints[3].y)
-            context.fillStyle = tri.baseColor;
             context.fill();
         }
         if(tri.pointLabels) {
