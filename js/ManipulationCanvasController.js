@@ -38,7 +38,7 @@ function ManipulationCanvasController(canvas) {
 
     that.mouseListener = function(e) {
         var mousePos = that.getMousePos(e); //get position of mouse relative to the canvas
-        console.log(mousePos);
+        console.log("Mouse clicked at: ", mousePos);
 
         if(that.mode == 'rotate'){
           that.rotatePoint = mousePos   //define the rotation point at clicked mouse position

@@ -30,12 +30,32 @@ window.onload = function() {
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
     //event callbacks
+    var angle = 0;
+
+    $('#angle').on('input', function() {
+        angle = this.value;
+    });
+
     $("#triangleArea").mousedown(function(e){
         manipulationController.mouseListener(e)
     });
 
+    var rotateButton = document.getElementById('rotateButton');
+    var flipButton = document.getElementById('flipButton');
+
     $("#flipButton").click(function(){
+        var flipPoints = manipulationController.flipPoints;
+        rotateButton.style.webkitAnimationName = '';
+
+        if(manipulationController.mode === 'flip'){
+            manipulationTriangle.flip(flipPoints[0], flipPoints[1]);
+        }
+
         var flipButton = this;
+        this.style.webkitAnimationName='oscillate';
+        this.style.webkitAnimationDuration = '1s';
+        this.style.webkitAnimationIterationCount = 'infinite';
+
         manipulationController.setMode('flip');
 
         flipButton.style.opacity = 1;
@@ -43,7 +63,18 @@ window.onload = function() {
     });
 
     $("#rotateButton").click(function(){
+        var rotatePoint = manipulationController.rotatePoint;
+        flipButton.style.webkitAnimationName = 'none';
+        
+        if(manipulationController.mode === 'rotate'){
+            manipulationTriangle.rotate(angle, rotatePoint);
+        }
+
         var rotateButton = this;
+        this.style.webkitAnimationName='oscillate';
+        this.style.webkitAnimationDuration = '1s';
+        this.style.webkitAnimationIterationCount = 'infinite';
+
         manipulationController.setMode('rotate');
 
         rotateButton.style.opacity = 1;
@@ -57,7 +88,7 @@ window.onload = function() {
       manipulationController.canvasBoundingRect = manipulationCanvas.getBoundingClientRect();
 
       //manipulationTriangle.anchorPoints[0] = {x: manipulationCanvas.width/2, y: manipulationCanvas.height/2, z: 0};
-      manipulationTriangle.translate(utils.subtract(utils.toPoint([manipulationCanvas.width/2, manipulationCanvas.height/2, 0]), manipulationTriangle.anchorPoints[0]))
+      manipulationTriangle.translate(utils.subtract(utils.toPoint([manipulationCanvas.width/2, manipulationCanvas.height/2, 0]),     manipulationTriangle.anchorPoints[0]))
       //TODO: make triangle scale position with canvas on resize
     };
 

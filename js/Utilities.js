@@ -20,9 +20,37 @@ var utils = {
         }
     },
 
+    scale: function(scaleBy, point){
+        return{
+            x: scaleBy*point.x,
+            y: scaleBy*point.y,
+            z: scaleBy*point.z
+        }
+    },
+
+    toArray: function(point){
+        return [point.x, point.y, point.z];
+    },
+
     normalize: function(p1, p2) {  //simple normalization to find unit vector of two points
-        diff = [p1[0] - p2[0], p1[1] - p2[1], p1[2] - p2[2]]
-        mag = pow((pow(diff[0], 2) + pow(diff[1], 2) + pow(diff[2], 2)), .5) //magnitude of 3d vector
-        return tf.point([diff[0]/mag, diff[1]/mag, diff[2]/mag])
+        var diff = [p1[0] - p2[0], p1[1] - p2[1], p1[2] - p2[2]];
+
+        var mag = Math.pow((Math.pow(diff[0], 2) + Math.pow(diff[1], 2) + Math.pow(diff[2], 2)), .5) //magnitude of 3d vector
+
+        return utils.toPoint([diff[0]/mag, diff[1]/mag, diff[2]/mag])
+    },
+
+    multiply: function(point, matrix){
+        var p = [0, 0, 0, 0];
+        var pointArray = utils.toArray(point);
+
+        for(var i = 0; i < 4; i++){
+            for(var j = 0; j < 4; j++){
+                p[i] += pointArray[j] * matrix[j][i];
+            }
+        }
+
+        console.log("Multiplied Matrices: ",  p);
+        return utils.toPoint(p);
     }
 }

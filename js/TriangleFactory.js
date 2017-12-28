@@ -42,17 +42,19 @@ function TriangleFactory() {
 
         //rotates triangle specified angle in degrees or radians, adding to moveQueue
         tri.rotate = function(angle, point, radians=false) {
+            console.log(angle);
+
             var move = {
-                p1 : utils.toPoint([point[0], point[1], -1]), //defining rotation axis on z
-                p2 : utils.toPoint([point[1], point[1], 1]),
-                u : utils.toPoint([0, 0, 0]),    //unit vector corresponding to axis through center
+                p1 : [point.x, point.y, -1], //defining rotation axis on z
+                p2 : [point.x, point.y, 1],
+                u : [0, 0, 0],    //unit vector corresponding to axis through center
                 remaining : 2*Math.PI //radians remaining before move completion
             }
             move.u = utils.normalize(move.p1, move.p2)
 
-            if(!radians) move.radians = toRadians(angle)    //converting angle to raidans
-            if(!timeBound) {
-                tri.rotateInstant(radians, point, radians);
+            if(!radians) move.radians = tri.toRadians(angle)    //converting angle to raidans
+            if(!tri.timeBound) {
+                tri.rotateInstant3d(radians, point, radians);
                 move.remaining = 0;
             }
             tri.moveQueue.push(move)
@@ -61,16 +63,18 @@ function TriangleFactory() {
 
         //flips triangle across line, adding to move Queue
         tri.flip = function(point1, point2) {
+            console.log(point1, point2);
+
             var move = {
-                p1 : utils.toPoint([point1[0], point1[1], 0]), //defining rotation axis on xy
-                p2 : utils.toPoint([point2[1], point2[1], 0]),
-                u : utils.toPoint([0, 0, 0]),                  //unit vector corresponding to rotation axis
+                p1 : [point1.x, point1.y, 0], //defining rotation axis on xy
+                p2 : [point2.x, point2.y, 0],
+                u : [0, 0, 0],                  //unit vector corresponding to rotation axis
                 remaining : Math.PI               //radians remaining in move
             }
-            move.u = utils.normalize(move.p1, move.p2)
+            move.u = utils.normalize(move.p1, move.p2);
 
-            if(!timeBound) {
-                tri.rotateInstant(radians, point, radians);
+            if(!tri.timeBound) {
+                tri.rotateInstant3d(move, move.remaining);
                 move.remaining = 0;
             }
             tri.moveQueue.push(move)
@@ -102,14 +106,14 @@ function TriangleFactory() {
                     p.z + center.z
                 ];
 
-                console.log(p);
+                console.log("AnchorPoints: ", i, p);
                 tri.anchorPoints.push(utils.toPoint(p))
             }
             for(var i = 0; i < 3; i++){
                 var p = utils.average(tri.anchorPoints[(i%3)+1], tri.anchorPoints[((i+1)%3)+1]);
 
                 tri.segmentPoints.push(p);
-                console.log(p);
+                console.log("SegmentPoints: " , i , p);
             }
         }
 
@@ -158,7 +162,7 @@ function TriangleFactory() {
             ]
             //http://paulbourke.net/geometry/rotate/
             //TODO implement rotation matrices
-            print("rotated " + tri.name + " by " + theta + " radians on " + move.u)
+            console.log("rotated ", tri.name, " by ",theta, " radians on ", move.u)
         }
 
         tri.toRadians = function(degrees) {
