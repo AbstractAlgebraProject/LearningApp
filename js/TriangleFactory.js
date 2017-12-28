@@ -78,10 +78,10 @@ function TriangleFactory() {
 
         tri.translate = function(vector) {
             for(point in tri.anchorPoints) {
-                utils.subtract(tri.anchorPoints[point], vector)
+                tri.anchorPoints[point] = utils.add(tri.anchorPoints[point], vector)
             }
             for(point in tri.segmentPoints) {
-                utils.subtract(tri.segmentPoints[point], vector)
+                tri.segmentPoints[point] = utils.add(tri.segmentPoints[point], vector)
             }
         }
 
