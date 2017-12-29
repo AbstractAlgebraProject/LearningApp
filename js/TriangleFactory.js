@@ -14,7 +14,7 @@ function TriangleFactory() {
         tri.name = config.name || tf.produced;
         tri.timeBound = config.timeBound || false;   //whether the triangle will be animated
         tri.moveQueue = []; //queued moves
-        tri.animationSpeed = config.animationSpeed || 1000;  //time taken (inMS) for flip/rotate actions
+        tri.animationSpeed = config.animationSpeed || 10000;  //time taken (inMS) for flip/rotate actions
         tri.radius = config.radius || 0;  //radius to define triangle size
         tri.baseColor = config.baseColor || "#0000000";//default color
         tri.segmentColors = config.segmentColors || ["#42a4e5", "#9a66f4", "#16c2cc"];
@@ -69,7 +69,7 @@ function TriangleFactory() {
                 p1 : [point1.x, point1.y, 0], //defining rotation axis on xy
                 p2 : [point2.x, point2.y, 0],
                 u : [0, 0, 0],                  //unit vector corresponding to rotation axis
-                remaining : Math.PI               //radians remaining in move
+                remaining : Math.PI/2               //radians remaining in move
             }
             move.u = utils.normalize(move.p1, move.p2);
 
@@ -86,6 +86,14 @@ function TriangleFactory() {
             }
             for(point in tri.segmentPoints) {
                 tri.segmentPoints[point] = utils.add(tri.segmentPoints[point], vector)
+            }
+        }
+
+        tri.generateSegmentPoints = function() {
+            for(var i = 0; i < 3; i++){
+                var p = utils.average(tri.anchorPoints[(i%3)+1], tri.anchorPoints[((i+1)%3)+1]);
+
+                tri.segmentPoints[i] = p;
             }
         }
 
@@ -106,7 +114,6 @@ function TriangleFactory() {
                     p.z + center.z
                 ];
 
-                console.log("AnchorPoints: ", i, p);
                 tri.anchorPoints.push(utils.toPoint(p))
             }
             for(var i = 0; i < 3; i++){
@@ -118,6 +125,7 @@ function TriangleFactory() {
         }
 
         tri.advanceAnimation = function(elapsedMS) {
+            tri.generateSegmentPoints()
             if(tri.timeBound) {
                 var ratio = elapsedMS/tri.animationSpeed    //how many complete rotations could occur in given elapsed time
                 var radians = 2 * Math.PI * ratio             //converting rotations to radians
@@ -155,14 +163,10 @@ function TriangleFactory() {
                     //TODO array[i]
                 }
             }
+            tri.translate(utils.scale(-1, utils.toPoint(move.p1)))
             var animationPoints = tri.anchorPoints;
             var c = animationPoints[0]
-            var translation = [
-                [1, 0, 0, c.x],
-                [0, 1, 0, c.y],
-                [0, 0, 1, c.z],
-                [0, 0, 0, 1]
-            ]
+
 
             var angles = utils.scale(theta, move.u);
 
@@ -180,13 +184,13 @@ function TriangleFactory() {
                     cos : Math.cos(angles.z)
                 }
             }
-            var rotXSpace = [
+            var rotX = [
                 [1, 0           , 0             , 0],
                 [0, trig.x.cos  , -trig.x.sin   , 0],
                 [0, trig.x.sin  , trig.x.cos    , 0],
                 [0, 0           , 0             , 1]
             ]
-            var rotYSpace = [
+            var rotY = [
                 [trig.y.cos , 0, trig.y.sin, 0],
                 [0          , 1, 0         , 0],
                 [-trig.y.sin, 0, trig.y.cos, 0],
@@ -205,7 +209,8 @@ function TriangleFactory() {
                 [0, 0, 0, 1]
             ]
 
-            var operationArray = [translation, rotXSpace, rotYSpace, rotZ, utils.inv(rotYSpace), utils.inv(rotZ), utils.inv(translation)];
+            //var operationArray = [translation, rotXSpace, rotYSpace, rotZ, utils.inv(rotYSpace), utils.inv(rotXSpace), utils.inv(translation)];
+            var operationArray = [utils.inv(rotX), utils.inv(rotY), rotZ, rotY, rotX]
             var operationMatrix = identity;
             for(matrix in operationArray ){
                 operationMatrix = utils.multiply4(operationMatrix, operationArray[matrix]);
@@ -216,6 +221,9 @@ function TriangleFactory() {
                 animationPoints[point].push(1)
                 animationPoints[point] = utils.multiply(animationPoints[point], operationMatrix)
             }
+
+            tri.anchorPoints = animationPoints
+            tri.translate(utils.scale(1, utils.toPoint(move.p1)))
 
             //http://paulbourke.net/geometry/rotate/
             //TODO implement rotation matrices
