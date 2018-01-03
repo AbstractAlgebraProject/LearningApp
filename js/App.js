@@ -8,6 +8,8 @@ window.onload = function() {
     var manipulationCanvas = $("#triangleArea")[0]; //element that will hold the rotated/fliped triangle
     var drawingCanvas = $('#drawingCanvas')[0]; //canvas for drawing symbols on modal after saving symmetry
 
+    var savedSymbols = [];
+
     var drawingController = new DrawingCanvasController(drawingCanvas); //controller to manage drawing on modal window
 
     $('#drawingCanvas').mousedown(function(e){
@@ -112,10 +114,30 @@ window.onload = function() {
     });
 
     $('#saveDrawing').click(function(){
+      var data = drawingCanvas.toDataURL('image/png');
+
+      savedSymbols.push(data);
+
+      var tempImg = document.createElement('img');  //creating img element to store canvas contents
+      tempImg.src = data;
+      tempImg.id = 'savedSym' + savedSymbols.length;
+      tempImg.width = $('#savedSymmetries').height() * .8;
+      tempImg.height = $('#savedSymmetries').height() * .8;
+      tempImg.addEventListener('click', playbackSym(savedSymbols.indexOf(data))); //callback should do something useful eventually
+      //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\\/\/\/\/\/\/\/\/\/\\\\
+      //TODO: find out why this listener is only being called once when the element is created
+
+      $('#savedSymmetries').append(tempImg);  //append image to container
+
+      console.log(tempImg);
+
       document.getElementById('saveModal').style.display = "none";
       drawingCanvas.getContext('2d').clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);  //clears drawing canvas in modal popup
-      //TODO: find a way to make this work; probably involves saving as png
     });
+
+    function playbackSym(index){
+      console.log(index);
+    }
 
     window.onclick = function(event) {
       if (event.target == document.getElementById('saveModal')) {

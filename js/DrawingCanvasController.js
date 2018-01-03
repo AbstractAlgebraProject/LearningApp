@@ -5,6 +5,7 @@ function DrawingCanvasController(canvas){
   that.canvas = canvas;
   that.ctx = canvas.getContext('2d');
   that.canvasBoundingRect = canvas.getBoundingClientRect();
+  that.strokeWidth = 3;
 
   var prevX = 0,
       prevY = 0,
@@ -17,7 +18,8 @@ function DrawingCanvasController(canvas){
     that.ctx.beginPath();
     that.ctx.moveTo(prevX, prevY);
     that.ctx.lineTo(currX, currY);
-    that.ctx.strokeStyle = '#420420';
+    that.ctx.strokeStyle = '#000000';
+    that.ctx.lineWidth = that.strokeWidth;
     that.ctx.stroke();
   }
 

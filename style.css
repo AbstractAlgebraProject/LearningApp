@@ -2,6 +2,9 @@
   --buttonColor: #33cc33;
   --bgColor: #d0fccc;
   --offWhite: #eff5ff;
+  --triBlue: #42a4e5;
+  --triGreen: #9a66f4;
+  --triPurple: #16c2cc;
 }
 
 html, body{
@@ -28,6 +31,22 @@ button{
 }
 
 button:hover{
+  cursor: pointer;
+  opacity: 1;
+}
+
+img{
+  border: 1px solid #000000;
+  border-radius: 5px;
+  position: relative;
+  top: 50%;
+  transform: translate(0%, -50%);
+  margin-left: 10px;
+  background-color: var(--offWhite);
+  opacity: .8;
+}
+
+img:hover{
   cursor: pointer;
   opacity: 1;
 }
@@ -128,7 +147,8 @@ input:focus{
 
 #savedSymmetries{
   border: 1px solid #000000;
-  background-color: var(--offWhite);
+  background-color: var(--triBlue);
+  opacity: .5;
   border-radius: 10px;
   height: 125px;
   margin-top: 49px;
