@@ -6,9 +6,8 @@
 
 
         <script type='text/javascript' src="js/jquery.js"></script>                      <!--JQUERY-->
-        <script type'text/javascript'
-        src="js/Utilities.js"></script>
-        <!--Utilities-->
+        <script type='text/javascript' src="js/Utilities.js"></script>                   <!--Utilities-->
+        <script type='text/javascript' src="js/DrawingCanvasController.js"></script>     <!--DrawingCanvasController-->
         <script type='text/javascript' src="js/TriangleFactory.js"></script>             <!--SymmetryAnalyzer-->
         <script type='text/javascript' src="js/TriangleRenderer.js"></script>            <!--TriangleFactory-->
         <script type='text/javascript' src="js/SymmetryAnalyzer.js"></script>            <!--TriangleRenderer-->
@@ -40,6 +39,17 @@
             </div>
 
             <div id='savedSymmetries'></div>
+          </div>
+        </div>
+
+        <div id='saveModal' class='modal'>
+          <div class='modalContent'>
+            <div id='drawingContainer' class='unselectable'>
+              <canvas id='drawingCanvas' class='unselectable' width='100' height='100'></canvas>
+            </div>
+
+            <button id='saveDrawing' class='modalButton'>Save</button>
+            <button id='clearCanvas' class='modalButton'>Clear</button>
           </div>
         </div>
 
