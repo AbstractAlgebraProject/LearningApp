@@ -52,7 +52,7 @@ window.onload = function() {
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
     //event callbacks
-    var angle = 0;
+    var angle = $('#angle').value = 60;
 
     $('#angle').on('input', function() {
         angle = this.value;

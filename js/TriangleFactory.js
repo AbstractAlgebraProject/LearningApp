@@ -125,7 +125,6 @@ function TriangleFactory() {
         }
 
         tri.advanceAnimation = function(elapsedMS) {
-            tri.generateSegmentPoints()
             if(tri.timeBound) {
                 var ratio = elapsedMS/tri.animationSpeed    //how many complete rotations could occur in given elapsed time
                 var radians = 2 * Math.PI * ratio             //converting rotations to radians
@@ -155,6 +154,8 @@ function TriangleFactory() {
                     }
                 }
             }
+            tri.generateSegmentPoints()
+
         }
 
         tri.rotateInstant3d = function(move, theta) {
