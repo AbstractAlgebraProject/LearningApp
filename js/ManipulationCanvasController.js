@@ -8,8 +8,8 @@ function ManipulationCanvasController(canvas) {
     that.canvasBoundingRect = canvas.getBoundingClientRect();
 
     //points used for displaying rotate and flip points
-    that.flipPoints = [{x: 0, y:0}, {x: 0, y:0}];
-    that.rotatePoint= {x: 0, y:0};
+    that.flipPoints = [{x: 0, y:0, z:0}, {x: 0, y:0, z:0}];
+    that.rotatePoint= {x: 0, y:0, z:0};
     that.flipLine = {p1: that.flipPoints[0], p2: that.flipPoints[1]};
     that.pointRadius = 10;
     that.pointIndex = 0;
@@ -32,7 +32,8 @@ function ManipulationCanvasController(canvas) {
     that.getMousePos = function(mouseEvent) {
       return {
         x: mouseEvent.clientX - that.canvasBoundingRect.left,    //gets position relative to top-left corner of the canvas
-        y: mouseEvent.clientY - that.canvasBoundingRect.top
+        y: mouseEvent.clientY - that.canvasBoundingRect.top,
+        z: 0
       };
     }
 
@@ -45,13 +46,18 @@ function ManipulationCanvasController(canvas) {
         }
 
         else if(that.mode == 'flip'){
+          if(that.flipPoints[0].x != 0 && that.flipPoints[1].x != 0){
+            console.log(0);
+            that.pointIndex = (utils.distanceBetween(mousePos, that.flipPoints[1]) < utils.distanceBetween(mousePos, that.flipPoints[0])) ? that.pointIndex = 1 : that.pointIndex = 0; //increment point index
+          }
+          else{
+            console.log(1);
+            that.pointIndex = (that.pointIndex == 1) ? that.pointIndex = 0 : that.pointIndex = 1;
+          }
+
           that.flipPoints[that.pointIndex].x = mousePos.x;
           that.flipPoints[that.pointIndex].y = mousePos.y;
-
-          that.pointIndex = (that.pointIndex == 0) ? that.pointIndex = 1 : that.pointIndex = 0; //increment point index
         }
-
-
     }
 
     that.render = function() {
