@@ -1,6 +1,6 @@
 //point: object with x-, y-, and z-components
-//array: list of x-, y-, and z-valueParts
-//matrix: 2d arrays
+//array: list of x-, y-, and z-values
+//matrix: 2d array
 //scalar: constant
 
 var utils = {
@@ -60,15 +60,53 @@ var utils = {
             }
         }
 
-        console.log("Multiplied Matrices: ",  p);
         return utils.toPoint(p);
     },
 
-    dot4: function(arr1, arr2){ //returns dot product of two 4-element arrays
+    dot4: function(arr1, arr2){ //returns dot product of two 4-element arrays; returns value
         return arr1[0]*arr2[0] + arr1[1]*arr2[1] + arr1[2]*arr2[2] +arr1[3]*arr2[3];
     },
 
-    multiply4: function(mat1, mat2){  //multiplies two 4x4 matrices; returns 2d array
+    dot: function(arr1, arr2){  //returns dot product of two arrays; returns value
+        var value = 0;
+        for(n in arr1){
+          value += arr1[n]*arr2[n];
+        }
+
+        return value;
+    },
+
+    rotateMatrix: function(m){  //rotates contents of matrix 90-degrees clockwise
+      var result = [];
+
+      for(i in m){
+        result.push([]);
+
+        for(j in m[i]){
+          result[i].push(m[m.length - j - 1][i]);
+        }
+      }
+
+      return result;
+    },
+
+    multiplyM: function(mat1, mat2){  //multiplies any two matrices with compatible sizes, returns matrix
+        var result = [];
+        var rotatedMat2 = utils.rotateMatrix(mat2);
+
+        for(i in mat1){
+          result.push([]);
+
+          for(j in mat2){
+            result[i][j] = utils.dot(mat1[i], mat2[j]);
+          }
+        }
+
+
+        return result;
+    },
+
+    multiply4: function(mat1, mat2){  //multiplies two 4x4 matrices; returns matrix
         var result = [
             [0,0,0,0],
             [0,0,0,0],
@@ -82,7 +120,6 @@ var utils = {
             }
         }
 
-        console.log("Multiplied 4x4 Matrices: ", result);
         return result;
     },
 

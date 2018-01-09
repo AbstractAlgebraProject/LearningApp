@@ -12,6 +12,7 @@ window.onload = function() {
 
     var drawingController = new DrawingCanvasController(drawingCanvas); //controller to manage drawing on modal window
 
+    
     $('#drawingCanvas').mousedown(function(e){
       drawingController.findMousePos('down', e);
     });

@@ -214,7 +214,7 @@ function TriangleFactory() {
             var operationArray = [utils.inv(rotX), utils.inv(rotY), rotZ, rotY, rotX]
             var operationMatrix = identity;
             for(matrix in operationArray ){
-                operationMatrix = utils.multiply4(operationMatrix, operationArray[matrix]);
+                operationMatrix = utils.multiplyM(operationMatrix, operationArray[matrix]);
             }
             //translate to origin
             for(point in animationPoints) {
