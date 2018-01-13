@@ -113,7 +113,6 @@ window.onload = function() {
         manipulationCanvas.getContext('2d').clearRect(0, 0, manipulationCanvas.width, manipulationCanvas.height);     //clears canvas
         triRenderer.render()
         manipulationController.render()
-
     }
     render()
 }

@@ -124,7 +124,6 @@ function TriangleFactory() {
         }
 
         tri.advanceAnimation = function(elapsedMS) {
-            tri.generateSegmentPoints()
             if(tri.timeBound) {
                 var ratio = elapsedMS/tri.animationSpeed    //how many complete rotations could occur in given elapsed time
                 var radians = 2 * Math.PI * ratio             //converting rotations to radians
@@ -154,6 +153,8 @@ function TriangleFactory() {
                     }
                 }
             }
+            tri.generateSegmentPoints()
+
         }
 
         tri.rotateInstant3d = function(move, theta) {
@@ -212,7 +213,7 @@ function TriangleFactory() {
             var operationArray = [utils.inv(rotX), utils.inv(rotY), rotZ, rotY, rotX]
             var operationMatrix = identity;
             for(matrix in operationArray ){
-                operationMatrix = utils.multiply4(operationMatrix, operationArray[matrix]);
+                operationMatrix = utils.multiplyM(operationMatrix, operationArray[matrix]);
             }
             //translate to origin
             for(point in animationPoints) {
