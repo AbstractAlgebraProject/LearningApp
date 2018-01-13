@@ -1,4 +1,3 @@
-
 function TriangleFactory() {
     var tf = this;
     tf.produced = 0

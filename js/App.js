@@ -4,7 +4,7 @@ window.onload = function() {
     var that = this;
     var triFactory = new TriangleFactory();
     var triRenderer = new TriangleRenderer();
-
+    var angle = document.getElementById('angle').value;
     var manipulationCanvas = $("#triangleArea")[0] //element that will hold the rotated/fliped triangle
 
     //setting size based on calculated %properties in html
@@ -46,7 +46,6 @@ window.onload = function() {
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
     //event callbacks
-    var angle = 0;
 
     $('#angle').on('input', function() {
         angle = this.value;

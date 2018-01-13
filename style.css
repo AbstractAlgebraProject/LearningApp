@@ -22,14 +22,14 @@ button{
 }
 
 @-webkit-keyframes oscillate{
-    0% {background-color: var(--buttonColor);}
-    50% {background-color: var(--offWhite);}
-    100% {background-color: var(--buttonColor);}
+    0% {opacity: .7;}
+    50% {opacity: 1;}
+    100% {opacity: .7;}
 }
 
 button:hover{
   cursor: pointer;
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 input{
