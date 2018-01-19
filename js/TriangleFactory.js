@@ -47,7 +47,8 @@ function TriangleFactory() {
                 p1 : [point.x, point.y, -1], //defining rotation axis on z
                 p2 : [point.x, point.y, 1],
                 u : [0, 0, 0],    //unit vector corresponding to axis through center
-                remaining : angle //radians remaining before move completion
+                remaining : angle, //radians remaining before move completion
+                angle : angle
             }
             move.u = utils.normalize(move.p1, move.p2)
 
@@ -68,7 +69,9 @@ function TriangleFactory() {
                 p1 : [point1.x, point1.y, 0], //defining rotation axis on xy
                 p2 : [point2.x, point2.y, 0],
                 u : [0, 0, 0],                  //unit vector corresponding to rotation axis
-                remaining : Math.PI/2               //radians remaining in move
+                remaining : Math.PI/2,               //radians remaining in move
+                angle : Math.PI/2,
+                inverse : false
             }
             move.u = utils.normalize(move.p1, move.p2);
 
@@ -77,6 +80,19 @@ function TriangleFactory() {
                 move.remaining = 0;
             }
             tri.moveQueue.push(move)
+        }
+
+        tri.undo = function() {
+            if(tri.moveQueue.length) {
+                var inverse = tri.moveQueue[tri.moveQueue.length-1]
+                if(!inverse.inverse) {
+                    inverse.remaining = inverse.angle //translating back
+                    inverse.inverse = true //set inverse flag to trigger removal after animation
+                    tri.moveQueue.push(inverse)
+                }
+
+            }
+
         }
 
         tri.translate = function(vector) {
@@ -129,18 +145,30 @@ function TriangleFactory() {
                 var radians = 2 * Math.PI * ratio             //converting rotations to radians
                 for (var i = 0; i < tri.moveQueue.length; i++) {
                     var m = tri.moveQueue[i];   //get corresponding move
+                    var rotation = 0; //how many radians the 3d rotation will go
                     if (m.remaining > 0) {  //if the move is not done being animated
                         if (m.remaining >= radians) {
-                            tri.rotateInstant3d(m, radians)
+                            rotation = radians
                             m.remaining -= radians
                             radians = 0
                         } else {
-                            tri.rotateInstant3d(m, m.remaining)
+                            rotation = m.remaining
                             radians -= m.remaining
                             m.remaining = 0
                         }
+                        if (m.inverse) {
+                            tri.rotateInstant3d(m, -1 * rotation)
+                        } else {
+                            tri.rotateInstant3d(m, rotation)
+                        }
+
                         if (radians <= 0){
                             break;
+                        }
+                    } else {
+                        if (m.inverse) {
+                            console.log("splicing at ", i-1)
+                            tri.moveQueue.splice(2, i-2); //remove the inverse and its original
                         }
                     }
                 }

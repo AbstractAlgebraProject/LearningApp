@@ -11,22 +11,6 @@ window.onload = function() {
     manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
     manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
 
-    var test1 = [
-        [1,2,3,4],
-        [5,6,7,8],
-        [9,10,11,12],
-        [13,14,15,16]
-    ];
-
-    var test2 = [
-        [3,3,3,3],
-        [3,3,3,3],
-        [3,3,3,3],
-        [3,3,3,3]
-    ];
-
-    utils.multiply4(test1, test2);
-
     triConfig = {   //configuration for main triangle object (rotates and flips)
         name : "Test",
         x : manipulationCanvas.width,
@@ -41,12 +25,10 @@ window.onload = function() {
 
     triRenderer.addRenderPair(manipulationTriangle, manipulationCanvas); //set triangle and canvas set to be rendered
 
-
     //initializing controller that manages positioning and drawing of flip and rotate points
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
     //event callbacks
-
     $('#angle').on('input', function() {
         angle = this.value;
     });
@@ -95,6 +77,18 @@ window.onload = function() {
         rotateButton.style.opacity = 1;
         flipButton.style.opacity = .7;
     });
+
+    $("#resetButton").click(function() {
+        manipulationTriangle.reset();
+    })
+
+    $("#undoButton").click(function() {
+        manipulationTriangle.undo();
+    })
+
+    $("#saveButton").click(function() {
+        $("#saveModal").show()
+    })
 
     //whenever the window resizes, change the width, height, and position of canvas
     $('body')[0].onresize = function(){

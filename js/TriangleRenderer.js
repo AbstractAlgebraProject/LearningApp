@@ -32,7 +32,6 @@ function TriangleRenderer() {
             context.lineTo(tri.segmentPoints[0].x, tri.segmentPoints[0].y); //center
             context.fillStyle = tri.segmentColors[0];
             context.fill();
-
             context.fillStyle = tri.segmentColors[1];
             context.beginPath();
             context.moveTo(tri.anchorPoints[0].x, tri.anchorPoints[0].y);
