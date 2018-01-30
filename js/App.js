@@ -17,7 +17,8 @@ window.onload = function() {
         y : manipulationCanvas.height,
         radius : 100,
         segmented : true,
-        timeBound: true
+        timeBound: true,
+        pointLabels: true
     }
 
     var manipulationTriangle = new triFactory.produceTriangle(triConfig);    //triangle for canvas that will be manipulated
@@ -88,6 +89,11 @@ window.onload = function() {
 
     $("#saveButton").click(function() {
         $("#saveModal").show()
+
+        $("#saveDrawing").click(function() {
+            saveManager.save(manipulationTriangle)
+            manipulationTriangle.reset()
+        })
     })
 
     //whenever the window resizes, change the width, height, and position of canvas

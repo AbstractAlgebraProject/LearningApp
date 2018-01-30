@@ -41,7 +41,6 @@ function TriangleFactory() {
 
         //rotates triangle specified angle in degrees or radians, adding to moveQueue
         tri.rotate = function(angle, point, radians=false) {
-            console.log(angle);
 
             var move = {
                 p1 : [point.x, point.y, -1], //defining rotation axis on z
@@ -52,7 +51,10 @@ function TriangleFactory() {
             }
             move.u = utils.normalize(move.p1, move.p2)
 
-            if(!radians) move.remaining = tri.toRadians(angle)    //converting angle to raidans
+            if(!radians) {
+                move.remaining = tri.toRadians(angle)    //converting angle to raidans
+                move.angle = tri.toRadians(angle)
+            }
             if(!tri.timeBound) {
                 tri.rotateInstant3d(move, move.remaining);
                 move.remaining = 0;
