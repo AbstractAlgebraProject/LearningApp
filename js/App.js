@@ -32,11 +32,6 @@ window.onload = function() {
     manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
     manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
 
-<<<<<<< HEAD
-=======
-    console.log($('#drawingContainer')[0].clientHeight);
-
->>>>>>> 1930b4ab52b0f0509becec3ba67951959a3f27ff
     triConfig = {   //configuration for main triangle object (rotates and flips)
         name : "Test",
         x : manipulationCanvas.width,
@@ -56,11 +51,9 @@ window.onload = function() {
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
     //event callbacks
-<<<<<<< HEAD
-=======
+
     var angle = $('#angle').value = 60;
 
->>>>>>> 1930b4ab52b0f0509becec3ba67951959a3f27ff
     $('#angle').on('input', function() {
         angle = this.value;
     });
@@ -160,7 +153,7 @@ window.onload = function() {
           document.getElementById('saveModal').style.display = "none";
       }
     }
-    
+
     //whenever the window resizes, change the width, height, and position of canvas
     $('body')[0].onresize = function(){
       manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
