@@ -4,13 +4,39 @@ window.onload = function() {
     var that = this;
     var triFactory = new TriangleFactory();
     var triRenderer = new TriangleRenderer();
-    var angle = document.getElementById('angle').value;
-    var manipulationCanvas = $("#triangleArea")[0] //element that will hold the rotated/fliped triangle
 
+    var manipulationCanvas = $("#triangleArea")[0]; //element that will hold the rotated/fliped triangle
+    var drawingCanvas = $('#drawingCanvas')[0]; //canvas for drawing symbols on modal after saving symmetry
+
+    var savedSymbols = [];
+
+    var drawingController = new DrawingCanvasController(drawingCanvas); //controller to manage drawing on modal window
+
+
+    $('#drawingCanvas').mousedown(function(e){
+      drawingController.findMousePos('down', e);
+    });
+
+    $('#drawingCanvas').mousemove(function(e){
+      drawingController.findMousePos('move', e);
+    });
+
+    $('#drawingCanvas').mouseup(function(e){
+      drawingController.findMousePos('up', e);
+    });
+
+    $('#drawingCanvas').mouseout(function(e){
+      drawingController.findMousePos('out', e);
+    });
     //setting size based on calculated %properties in html
     manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
     manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
 
+<<<<<<< HEAD
+=======
+    console.log($('#drawingContainer')[0].clientHeight);
+
+>>>>>>> 1930b4ab52b0f0509becec3ba67951959a3f27ff
     triConfig = {   //configuration for main triangle object (rotates and flips)
         name : "Test",
         x : manipulationCanvas.width,
@@ -30,6 +56,11 @@ window.onload = function() {
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
     //event callbacks
+<<<<<<< HEAD
+=======
+    var angle = $('#angle').value = 60;
+
+>>>>>>> 1930b4ab52b0f0509becec3ba67951959a3f27ff
     $('#angle').on('input', function() {
         angle = this.value;
     });
@@ -87,19 +118,56 @@ window.onload = function() {
         manipulationTriangle.undo();
     })
 
-    $("#saveButton").click(function() {
-        $("#saveModal").show()
 
-        $("#saveDrawing").click(function() {
-            saveManager.save(manipulationTriangle)
-            manipulationTriangle.reset()
-        })
-    })
+    $('#saveButton').click(function(){
+      document.getElementById('saveModal').style.display = 'block';
+      drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
+      drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
+    });
 
+    $('#clearCanvas').click(function(){
+      drawingCanvas.getContext('2d').clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);  //clears drawing canvas in modal popup
+    });
+
+    $('#saveDrawing').click(function(){
+      var data = drawingCanvas.toDataURL('image/png');
+
+      savedSymbols.push(data);
+
+      var tempImg = document.createElement('img');  //creating img element to store canvas contents
+      tempImg.src = data;
+      tempImg.id = 'savedSym' + savedSymbols.length;
+      tempImg.width = $('#savedSymmetries').height() * .8;
+      tempImg.height = $('#savedSymmetries').height() * .8;
+      tempImg.addEventListener('click', playbackSym(savedSymbols.indexOf(data))); //callback should do something useful eventually
+      //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\\/\/\/\/\/\/\/\/\/\\\\
+      //TODO: find out why this listener is only being called once when the element is created
+
+      $('#savedSymmetries').append(tempImg);  //append image to container
+
+      console.log(tempImg);
+
+      document.getElementById('saveModal').style.display = "none";
+      drawingCanvas.getContext('2d').clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);  //clears drawing canvas in modal popup
+    });
+
+    function playbackSym(index){
+      console.log(index);
+    }
+
+    window.onclick = function(event) {
+      if (event.target == document.getElementById('saveModal')) {
+          document.getElementById('saveModal').style.display = "none";
+      }
+    }
+    
     //whenever the window resizes, change the width, height, and position of canvas
     $('body')[0].onresize = function(){
       manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
       manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
+      drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
+      drawingCanvas.height =$('#drawingContainer')[0].clientHeight;
+
       manipulationController.canvasBoundingRect = manipulationCanvas.getBoundingClientRect();
 
       //manipulationTriangle.anchorPoints[0] = {x: manipulationCanvas.width/2, y: manipulationCanvas.height/2, z: 0};
@@ -113,6 +181,8 @@ window.onload = function() {
         manipulationCanvas.getContext('2d').clearRect(0, 0, manipulationCanvas.width, manipulationCanvas.height);     //clears canvas
         triRenderer.render()
         manipulationController.render()
+
     }
+
     render()
 }
