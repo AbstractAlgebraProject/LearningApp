@@ -30,6 +30,7 @@
             <button id='undoButton'>Undo</button>
             <button id='saveButton'>Save</button>
             <input type='text' id='angle' value = 60 placeholder="Angle">
+            <button id='settingsButton'>Settings</button>
           </div>
 
           <div id='rightColumn' class='unselectable'>
@@ -39,10 +40,12 @@
             </div>
 
             <div id='savedSymmetries'>
-            
+
             </div>
           </div>
         </div>
+
+        <!--MODALS-->
 
         <div id='saveModal' class='modal'>
           <div class='modalContent'>
@@ -52,6 +55,32 @@
 
             <button id='saveDrawing' class='modalButton'>Save</button>
             <button id='clearCanvas' class='modalButton'>Clear</button>
+          </div>
+        </div>
+
+        <div id='editModal' class = 'modal' symbolIndex=''>
+          <div class='modalContent'>
+            <button id='deleteDrawing' class='modalButton'>Delete</button>
+            <button id='editDrawing' class='modalButton'>Edit</button>
+          </div>
+        </div>
+
+        <div id='settingsModal' class='modal'>
+          <div class='modalContent'>
+            <button id='closeSettings'></button>
+            <br>
+            <label class='checkboxContainer'> Colors
+              <input id='colors' type='checkbox'>
+              <span class='checkmark'></span>
+            </label>
+            <label class='checkboxContainer'> Symmetry Correction
+              <input id='symSnap' type='checkbox'>
+              <span class='checkmark'></span>
+            </label>
+            <label class='checkboxContainer'> Labels
+              <input id='labels' type='checkbox'>
+              <span class='checkmark'></span>
+            </label>
           </div>
         </div>
 
