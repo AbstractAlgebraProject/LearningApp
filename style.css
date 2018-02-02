@@ -232,3 +232,9 @@ input:focus{
   width: 87%;
   background-color: var(--triGreen);
 }
+
+#clearButton{
+  width: 87%;
+  height: 125px;
+  background-color: var(--triPurple);
+}

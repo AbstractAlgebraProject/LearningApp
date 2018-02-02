@@ -126,6 +126,9 @@ window.onload = function() {
       drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
     });
 
+    $('#clearButton').click(function(){
+      window.location.reload();
+    });
     //deletes selected drawing
     $('#deleteDrawing').click(function(){
       var imgName = $('#editModal').attr('symbolIndex');
