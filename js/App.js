@@ -12,6 +12,27 @@ window.onload = function() {
     var editing = false;    //dumbguy boolean to determine whether drawn symbol is new or edited
     var drawingController = new DrawingCanvasController(drawingCanvas); //controller to manage drawing on modal window
 
+    //apparently you can use CSS in console.log() lmao
+    //type console.log("%c somestring", CSS);
+    //the following strings can be used as CSS strings for logging prettily
+    const goodLog = [
+        'background: green',
+        'color: white',
+        'display: block',
+        'text-align: center'
+    ].join(';');
+    const badLog = [
+        'background: red',
+        'color: black',
+        'display: block',
+        'text-align: center'
+    ].join(';');
+    const lineBreak = [
+        'background: black',
+        'color: black',
+        'display: block',
+        'text-align: center'
+    ].join(';');
 
     $('#drawingCanvas').mousedown(function(e){
       drawingController.findMousePos('down', e);
@@ -183,20 +204,28 @@ window.onload = function() {
       drawingCanvas.getContext('2d').clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);  //clears drawing canvas in modal popup
     });
 
+    window.onclick = function(event){
+        console.log('**************************');
+        console.log("%cCLICK TARGET: ", goodLog, event.target);
+        console.log('**************************');
+        console.log('\n');
 
-    window.onclick = function(event) {
-      if (event.target == document.getElementById('saveModal')) {
-          document.getElementById('saveModal').style.display = "none";
-      }
-    }
+    };
+    //one liner that checks if you click outside a modal and closes if true
+    $('.modal').on('click', function(event){
+        if(!$(event.target).parents('.modal').length) this.style.display = 'none';
+    });
+
     //whenever the window resizes, change the width, height, and position of canvas
     $('body')[0].onresize = function(){
-      manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
-      manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
-      drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
-      drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
-
-      manipulationController.canvasBoundingRect = manipulationCanvas.getBoundingClientRect();
+       manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
+       manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
+       drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
+       drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
+       console.log(manipulationCanvas.width);
+       console.log(manipulationCanvas.height);
+      //
+      // manipulationController.canvasBoundingRect = manipulationCanvas.getBoundingClientRect();
 
       //manipulationTriangle.anchorPoints[0] = {x: manipulationCanvas.width/2, y: manipulationCanvas.height/2, z: 0};
       manipulationTriangle.translate(utils.subtract(utils.toPoint([manipulationCanvas.width/2, manipulationCanvas.height/2, 0]),     manipulationTriangle.anchorPoints[0]))
