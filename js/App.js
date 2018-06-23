@@ -62,7 +62,7 @@ window.onload = function() {
         radius : 100,
         segmented : true,
         timeBound: true,
-        labels: true
+        pointLabels: true
     }
 
     var BGtriConfig = {   //configuration for main triangle object (rotates and flips)
@@ -72,7 +72,7 @@ window.onload = function() {
         radius : triConfig.radius,
         segmented : false,
         timeBound: true,
-        labels: false,
+        pointLabels: false,
         baseColor: "#5c6370"
     }
 
@@ -159,6 +159,7 @@ window.onload = function() {
 
     $('#labels').change(function(){
       //stub for labels checkbox
+      manipulationTriangle.pointLabels = !manipulationTri.pointLabels
     });
 
     $('#segments').change(function(){
