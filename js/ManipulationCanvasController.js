@@ -32,7 +32,20 @@ function ManipulationCanvasController(canvas) {
     that.filleColorFlip = '#5191f7'
 
     //mode ("rotate" or "flip")
-    that.mode = ""
+    that.mode = "";
+
+    const goodLog = [
+        'background: green',
+        'color: white',
+        'display: block',
+        'text-align: center'
+    ].join(';');
+    const badLog = [
+        'background: red',
+        'color: black',
+        'display: block',
+        'text-align: center'
+    ].join(';');
 
     that.setMode = function(mode) {
         that.mode = mode
@@ -54,7 +67,7 @@ function ManipulationCanvasController(canvas) {
 
     that.mouseListener = function(e) {
         var mousePos = that.getMousePos(e); //get position of mouse relative to the canvas
-        console.log("Mouse clicked at: ", mousePos);
+        console.log("%cMOUSE CLICKED AT: ", goodLog, mousePos);
 
         if(that.mode == 'rotate'){
           that.rotatePoint = mousePos   //define the rotation point at clicked mouse position
@@ -77,7 +90,6 @@ function ManipulationCanvasController(canvas) {
 
     that.render = function() {
         var ctx = that.context
-
         if(that.mode == "rotate") {
             //drawing single point that defines axis of rotation
             ctx.fillStyle = that.rotateFillColor;

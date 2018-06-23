@@ -137,7 +137,7 @@ function TriangleFactory() {
                 var p = utils.average(tri.anchorPoints[(i%3)+1], tri.anchorPoints[((i+1)%3)+1]);
 
                 tri.segmentPoints.push(p);
-                console.log("SegmentPoints: " , i , p);
+                //console.log("SegmentPoints: " , i , p);
             }
         }
 
@@ -180,6 +180,8 @@ function TriangleFactory() {
                     var m = tri.moveQueue[i];   //get corresponding move
                     if (m.remaining > 0) {  //if the move is not done, do it
                         tri.rotateInstant3d(m, m.remaining)
+                        console.log("hereasdfasdfasdf")
+
                     }
                 }
             }
@@ -257,7 +259,7 @@ function TriangleFactory() {
 
             //http://paulbourke.net/geometry/rotate/
             //TODO implement rotation matrices
-            console.log("rotated ", tri.name, " by ",theta, " radians on ", move.u)
+            //console.log("rotated ", tri.name, " by ",theta, " radians on ", move.u)
         }
 
         tri.toRadians = function(degrees) {

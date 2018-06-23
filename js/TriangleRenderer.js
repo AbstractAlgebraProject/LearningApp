@@ -3,13 +3,11 @@
 function TriangleRenderer() {
     var that = this
 
-    var date = new Date();
-    that.lastFrameTime = date.getTime() //epoch in ms
-
     that.renderPairs = [] //pairs of triangles to be rendered
 
     that.addRenderPair= function(triangle, canvas) {
-        that.renderPairs.push({tri : triangle, canvas : canvas})
+        var newDate = new Date();
+        that.renderPairs.push({tri : triangle, canvas : canvas, lastFrameTime : newDate.getTime()})
     }
 
     that.renderPair = function(pair) {
@@ -19,8 +17,8 @@ function TriangleRenderer() {
         var newDate = new Date();
         var thisFrameTime = newDate.getTime()
 
-        tri.advanceAnimation(thisFrameTime-that.lastFrameTime);
-        that.lastFrameTime = thisFrameTime
+        tri.advanceAnimation(thisFrameTime - pair.lastFrameTime);
+        pair.lastFrameTime = thisFrameTime;
 
         if(tri.segmented) { //drawing procedure for segmented triangle
             context.fillStyle = tri.segmentColors[0];
