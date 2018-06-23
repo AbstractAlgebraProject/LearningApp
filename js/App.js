@@ -90,7 +90,18 @@ window.onload = function() {
     //initializing controller that manages positioning and drawing of flip and rotate points
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
-    //event callback
+    $("#triangleArea").mousedown(function(e){
+        manipulationController.findMousePos('down', e);
+    });
+    $("#triangleArea").mousemove(function(e){
+        manipulationController.findMousePos('move', e);
+    });
+    $("#triangleArea").mouseup(function(e){
+        manipulationController.findMousePos('up', e);
+    });
+    $("#triangleArea").mouseout(function(e){
+        manipulationController.findMousePos('out', e);
+    });
 
     manipulationController.angle = $('#angle').value = 60;
 
@@ -186,6 +197,9 @@ window.onload = function() {
       drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
     });
 
+    $('#cancelDrawing').click(function(){
+        $('#editModal').css('display', 'none');
+    });
     $('#settingsButton').click(function(){
       $('#settingsModal').css('display', 'block');
     });
@@ -221,12 +235,15 @@ window.onload = function() {
       drawingCanvas.getContext('2d').clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);  //clears drawing canvas in modal popup
     });
 
+    $('#undoButton').click(function(){
+        manipulationTriangle.undo();
+    });
+    
     window.onclick = function(event){
-        console.log('**************************');
-        console.log("%cCLICK TARGET: ", goodLog, event.target);
-        console.log('**************************');
-        console.log('\n');
-
+        // console.log('**************************');
+        // console.log("%cCLICK TARGET: ", goodLog, event.target);
+        // console.log('**************************');
+        // console.log('\n');
     };
     //one liner that checks if you click outside a modal and closes if true
     $('.modal').on('click', function(event){
@@ -234,19 +251,42 @@ window.onload = function() {
     });
 
     //whenever the window resizes, change the width, height, and position of canvas
+    function calcTranslateDiff(point){
+        var toReturn = {x: 0, y: 0};
+        var drawWidth = $('#drawingArea')[0].clientWidth;
+        var drawHeight = $('#drawingArea')[0].clientHeight;
+        var canvasWidth = manipulationCanvas.width;
+        var canvasHeight = manipulationCanvas.height;
+
+        toReturn.x = (drawWidth-canvasWidth)*(point.x/canvasWidth);
+        toReturn.y = (drawHeight-canvasHeight)*(point.y/canvasHeight);
+
+        return toReturn;
+    }
+
+    function resizePoint(point){
+        point = utils.add(point, calcTranslateDiff(point));
+    }
+
     $('body')[0].onresize = function(){
+       manipulationTriangle.translate(calcTranslateDiff(manipulationTriangle.anchorPoints[0]));
+       resizePoint(manipulationController.rotatePoint);
+       resizePoint(manipulationController.flipPoints[0]);
+       resizePoint(manipulationController.flipPoints[1]);
+       resizePoint(manipulationController.flipLine.p1);
+       resizePoint(manipulationController.flipLine.p2);
+       bgTri.translate({x: ($('#drawingArea')[0].clientWidth-manipulationCanvas.width)/2, y: ($('#drawingArea')[0].clientHeight-manipulationCanvas.height)/2});
+
        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
        manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
        drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
        drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
-       console.log(manipulationCanvas.width);
-       console.log(manipulationCanvas.height);
+       //console.log(manipulationCanvas.width);
+       //console.log(manipulationCanvas.height);
       //
       // manipulationController.canvasBoundingRect = manipulationCanvas.getBoundingClientRect();
 
       //manipulationTriangle.anchorPoints[0] = {x: manipulationCanvas.width/2, y: manipulationCanvas.height/2, z: 0};
-      manipulationTriangle.translate(utils.subtract(utils.toPoint([manipulationCanvas.width/2, manipulationCanvas.height/2, 0]),     manipulationTriangle.anchorPoints[0]));
-      //bgTri.translate(utils.subtract(utils.toPoint([manipulationCanvas.width/2, manipulationCanvas.height/2, 0]),     bgTri.anchorPoints[0]));
       //TODO: make triangle scale position with canvas on resize
     };
 

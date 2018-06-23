@@ -9,10 +9,6 @@ function ManipulationCanvasController(canvas) {
         $('#angle').on('input', function() {
             that.angle = this.value;
         });
-
-        $("#triangleArea").mousedown(function(e){
-            that.mouseListener(e)
-        });
     }
     that.initialize();
 
@@ -28,8 +24,8 @@ function ManipulationCanvasController(canvas) {
     that.flipLine = {p1: that.flipPoints[0], p2: that.flipPoints[1]};
     that.pointRadius = 10;
     that.pointIndex = 0;
-    that.fillColorRotate = '#5191f7'
-    that.filleColorFlip = '#5191f7'
+    that.rotateFillColor = '#420420';
+    that.flipFillColor = '#420420';
 
     //mode ("rotate" or "flip")
     that.mode = "";
@@ -48,13 +44,28 @@ function ManipulationCanvasController(canvas) {
     ].join(';');
 
     that.setMode = function(mode) {
+        if(that.mode == ''){
+            that.flipPoints[0].x = 0;
+            that.flipPoints[0].y = 0;
+            that.flipPoints[1].x = 0;
+            that.flipPoints[1].y = 0;
+            that.rotatePoint.x = that.canvasBoundingRect.width/2;
+            that.rotatePoint.y = that.canvasBoundingRect.height/2;
+        }
+
         that.mode = mode
+
         if (mode == "rotate") { //reset the point values in preperation for next flip
             that.flipPoints[0].x = 0;
             that.flipPoints[0].y = 0;
             that.flipPoints[1].x = 0;
             that.flipPoints[1].y = 0;
         }
+        else if(mode == 'flip'){
+            that.rotatePoint.x = that.canvasBoundingRect.width/2;
+            that.rotatePoint.y = that.canvasBoundingRect.height/2;
+        }
+
     }
 
     that.getMousePos = function(mouseEvent) {
@@ -65,27 +76,42 @@ function ManipulationCanvasController(canvas) {
       };
     }
 
-    that.mouseListener = function(e) {
-        var mousePos = that.getMousePos(e); //get position of mouse relative to the canvas
-        console.log("%cMOUSE CLICKED AT: ", goodLog, mousePos);
+    var prevX=prevY=currX=currY=0;
+    var down = false;
+    that.findMousePos = function(flag, e){
+      if(flag == 'down'){
+        prevX = currX;
+        prevY = currY;
 
-        if(that.mode == 'rotate'){
-          that.rotatePoint = mousePos   //define the rotation point at clicked mouse position
-        }
+        currX = e.clientX - $('#triangleArea').offset().left;
+        currY = e.clientY - $('#triangleArea').offset().top;
+        that.rotatePoint.x = currX;
+        that.rotatePoint.y = currY;
+        that.flipPoints[0].x = currX;
+        that.flipPoints[0].y = currY;
+        that.flipPoints[1].x = currX;
+        that.flipPoints[1].y = currY;
+        down = true;
+      }
 
-        else if(that.mode == 'flip'){
-          if(that.flipPoints[0].x != 0 && that.flipPoints[1].x != 0){
-            console.log(0);
-            that.pointIndex = (utils.distanceBetween(mousePos, that.flipPoints[1]) < utils.distanceBetween(mousePos, that.flipPoints[0])) ? that.pointIndex = 1 : that.pointIndex = 0; //increment point index
-          }
-          else{
-            console.log(1);
-            that.pointIndex = (that.pointIndex == 1) ? that.pointIndex = 0 : that.pointIndex = 1;
-          }
+      if(flag == 'move'){
+        if(down){
+          prevX = currX;
+          prevY = currY;
 
-          that.flipPoints[that.pointIndex].x = mousePos.x;
-          that.flipPoints[that.pointIndex].y = mousePos.y;
-        }
+          currX = e.clientX - $('#triangleArea').offset().left;
+          currY = e.clientY - $('#triangleArea').offset().top;
+
+          that.flipPoints[1].x = currX;
+          that.flipPoints[1].y = currY;
+          console.log(that.flipLine);
+
+         }
+      }
+
+      if(flag == 'out' || flag == 'up'){
+        down = false;
+      }
     }
 
     that.render = function() {
@@ -115,6 +141,7 @@ function ManipulationCanvasController(canvas) {
               ctx.fill();
             }
         }
-
     }
+
+
 }
