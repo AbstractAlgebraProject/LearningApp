@@ -61,26 +61,36 @@ window.onload = function() {
         y : manipulationCanvas.height,
         radius : 100,
         segmented : true,
-        timeBound: true
+        timeBound: true,
+        labels: true
+    }
+
+    var BGtriConfig = {   //configuration for main triangle object (rotates and flips)
+        name : "BG",
+        x : triConfig.x,
+        y : triConfig.y,
+        radius : triConfig.radius,
+        segmented : false,
+        timeBound: true,
+        labels: false,
+        baseColor: "#5c6370"
     }
 
     var manipulationTriangle = new triFactory.produceTriangle(triConfig);    //triangle for canvas that will be manipulated
-    manipulationTriangle.reset()
+    manipulationTriangle.reset();
 
-    triRenderer.addRenderPair(manipulationTriangle, manipulationCanvas); //set triangle and canvas set to be rendered
+    var bgTri = new triFactory.produceTriangle(BGtriConfig);                //background triangle
+    bgTri.reset();
+
+    triRenderer.addRenderPair(bgTri, manipulationCanvas);                   //add background tri first so it draws behind
+    triRenderer.addRenderPair(manipulationTriangle, manipulationCanvas);    //set triangle and canvas set to be rendered
+
 
 
     //initializing controller that manages positioning and drawing of flip and rotate points
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
-    //event callbacks
-
-    $('#angle').on('input', function() {
-        angle = this.value;
-    });
-
     $("#triangleArea").mousedown(function(e){
-        manipulationController.mouseListener(e);
         manipulationController.findMousePos('down', e);
     });
     $("#triangleArea").mousemove(function(e){
@@ -93,8 +103,7 @@ window.onload = function() {
         manipulationController.findMousePos('out', e);
     });
 
-    var rotateButton = document.getElementById('rotateButton');
-    var flipButton = document.getElementById('flipButton');
+    manipulationController.angle = $('#angle').value = 60;
 
     $("#flipButton").click(function(){
         var flipPoints = manipulationController.flipPoints;
@@ -120,7 +129,7 @@ window.onload = function() {
         flipButton.style.webkitAnimationName = 'none';
 
         if(manipulationController.mode === 'rotate'){
-            manipulationTriangle.rotate(angle, rotatePoint);
+            manipulationTriangle.rotate(manipulationController.angle, rotatePoint);
         }
 
         var rotateButton = this;
@@ -134,12 +143,14 @@ window.onload = function() {
         flipButton.style.opacity = .7;
     });
 
+    //edit menu callbacks
     $('#closeSettings').click(function(){
       $('#settingsModal').css('display', 'none');
     });
 
     $('#colors').change(function(){
       //stub for colors checkbox
+
     });
 
     $('#symSnap').change(function(){
@@ -149,6 +160,12 @@ window.onload = function() {
     $('#labels').change(function(){
       //stub for labels checkbox
     });
+
+    $('#segments').change(function(){
+        //stub for segments checking
+        manipulationTriangle.toggleSegmentation()
+    })
+
     //opens drawing window to save symmetry
     $('#saveButton').click(function(){
       $('#saveModal').css('display', 'block');
@@ -159,6 +176,7 @@ window.onload = function() {
     $('#clearButton').click(function(){
       window.location.reload();
     });
+
     //deletes selected drawing
     $('#deleteDrawing').click(function(){
       var imgName = $('#editModal').attr('symbolIndex');
@@ -229,17 +247,39 @@ window.onload = function() {
     });
 
     //whenever the window resizes, change the width, height, and position of canvas
-    $('body')[0].onresize = function(){
-        var dx = ($('#drawingArea')[0].clientWidth-manipulationCanvas.width)*(manipulationTriangle.anchorPoints[0].x/manipulationCanvas.width);
-        var dy = ($('#drawingArea')[0].clientHeight-manipulationCanvas.height)*(manipulationTriangle.anchorPoints[0].y/manipulationCanvas.height);
+    function calcTranslateDiff(point){
+        console.log("POINT: ", point);
+        var toReturn = {x: 0, y: 0};
+        var drawWidth = $('#drawingArea')[0].clientWidth;
+        var drawHeight = $('#drawingArea')[0].clientHeight;
+        var canvasWidth = manipulationCanvas.width;
+        var canvasHeight = manipulationCanvas.height;
 
-       manipulationTriangle.translate({x: dx, y: dy});
+        toReturn.x = (drawWidth-canvasWidth)*(point.x/canvasWidth);
+        toReturn.y = (drawHeight-canvasHeight)*(point.y/canvasHeight);
+
+        return toReturn;
+    }
+
+    function resizePoint(point){
+        point = utils.add(point, calcTranslateDiff(point));
+    }
+
+    $('body')[0].onresize = function(){
+       manipulationTriangle.translate(calcTranslateDiff(manipulationTriangle.anchorPoints[0]));
+       resizePoint(manipulationController.rotatePoint);
+       resizePoint(manipulationController.flipPoints[0]);
+       resizePoint(manipulationController.flipPoints[1]);
+       resizePoint(manipulationController.flipLine.p1);
+       resizePoint(manipulationController.flipLine.p2);
+       bgTri.translate({x: ($('#drawingArea')[0].clientWidth-manipulationCanvas.width)/2, y: ($('#drawingArea')[0].clientHeight-manipulationCanvas.height)/2});
+
        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
        manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
        drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
        drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
-       console.log(manipulationCanvas.width);
-       console.log(manipulationCanvas.height);
+       //console.log(manipulationCanvas.width);
+       //console.log(manipulationCanvas.height);
       //
       // manipulationController.canvasBoundingRect = manipulationCanvas.getBoundingClientRect();
 
@@ -251,10 +291,10 @@ window.onload = function() {
     function render() {
         window.requestAnimationFrame(render);
         manipulationCanvas.getContext('2d').clearRect(0, 0, manipulationCanvas.width, manipulationCanvas.height);     //clears canvas
-        triRenderer.render()
-        manipulationController.render()
+        triRenderer.render();
+        manipulationController.render();
 
     }
 
-    render()
+    render();
 }

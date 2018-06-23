@@ -3,9 +3,20 @@
 function ManipulationCanvasController(canvas) {
     var that = this;
 
+    that.initialize = function() {
+        that.angle = $('#angle').value = 60;
+
+        $('#angle').on('input', function() {
+            that.angle = this.value;
+        });
+    }
+    that.initialize();
+
     that.canvas = canvas
     that.context = canvas.getContext('2d')
     that.canvasBoundingRect = canvas.getBoundingClientRect();
+
+    that.angle = 0; //rotation angle
 
     //points used for displaying rotate and flip points
     that.flipPoints = [{x: 0, y:0, z:0}, {x: 0, y:0, z:0}];
@@ -39,6 +50,8 @@ function ManipulationCanvasController(canvas) {
             that.flipPoints[0].y = 0;
             that.flipPoints[1].x = 0;
             that.flipPoints[1].y = 0;
+        }
+        else if(mode == 'flip'){
             that.rotatePoint.x = that.canvasBoundingRect.width/2;
             that.rotatePoint.y = that.canvasBoundingRect.height/2;
         }
@@ -52,18 +65,6 @@ function ManipulationCanvasController(canvas) {
       };
     }
 
-    that.mouseListener = function(e) {
-        var mousePos = that.getMousePos(e); //get position of mouse relative to the canvas
-        console.log("%cMOUSE CLICKED AT: ", goodLog, mousePos);
-
-        if(that.mode == 'rotate'){
-          that.rotatePoint = mousePos;   //define the rotation point at clicked mouse position
-        }
-
-        else if(that.mode == 'flip'){
-
-        }
-    }
     var prevX=prevY=currX=currY=0;
     var down = false;
     that.findMousePos = function(flag, e){
@@ -73,11 +74,12 @@ function ManipulationCanvasController(canvas) {
 
         currX = e.clientX - $('#triangleArea').offset().left;
         currY = e.clientY - $('#triangleArea').offset().top;
+        that.rotatePoint.x = currX;
+        that.rotatePoint.y = currY;
         that.flipPoints[0].x = currX;
         that.flipPoints[0].y = currY;
         that.flipPoints[1].x = currX;
         that.flipPoints[1].y = currY;
-
         down = true;
       }
 
@@ -91,6 +93,8 @@ function ManipulationCanvasController(canvas) {
 
           that.flipPoints[1].x = currX;
           that.flipPoints[1].y = currY;
+          console.log(that.flipLine);
+
          }
       }
 
@@ -101,7 +105,6 @@ function ManipulationCanvasController(canvas) {
 
     that.render = function() {
         var ctx = that.context
-
         if(that.mode == "rotate") {
             //drawing single point that defines axis of rotation
             ctx.fillStyle = that.rotateFillColor;

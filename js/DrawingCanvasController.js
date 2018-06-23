@@ -1,5 +1,26 @@
 function DrawingCanvasController(canvas){
   var that = this;
+
+  that.initialize = function() {
+      //drawing canvas callbacks
+      $('#drawingCanvas').mousedown(function(e){
+        that.findMousePos('down', e);
+      });
+
+      $('#drawingCanvas').mousemove(function(e){
+        that.findMousePos('move', e);
+      });
+
+      $('#drawingCanvas').mouseup(function(e){
+        that.findMousePos('up', e);
+      });
+
+      $('#drawingCanvas').mouseout(function(e){
+        that.findMousePos('out', e);
+      });
+  }
+  that.initialize()
+
   var down = false;
 
   that.canvas = canvas;
@@ -22,7 +43,6 @@ function DrawingCanvasController(canvas){
     that.ctx.lineWidth = that.strokeWidth;
     that.ctx.stroke();
   }
-
 
   that.findMousePos = function(flag, e){
     console.log(flag);
