@@ -98,6 +98,7 @@ function TriangleFactory() {
         }
 
         tri.translate = function(vector) {
+            console.log("Translating by: ", vector);
             for(point in tri.anchorPoints) {
                 tri.anchorPoints[point] = utils.add(tri.anchorPoints[point], vector)
             }

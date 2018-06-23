@@ -74,14 +74,23 @@ window.onload = function() {
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
     //event callbacks
-    var angle = $('#angle').value = 60;
 
     $('#angle').on('input', function() {
         angle = this.value;
     });
 
     $("#triangleArea").mousedown(function(e){
-        manipulationController.mouseListener(e)
+        manipulationController.mouseListener(e);
+        manipulationController.findMousePos('down', e);
+    });
+    $("#triangleArea").mousemove(function(e){
+        manipulationController.findMousePos('move', e);
+    });
+    $("#triangleArea").mouseup(function(e){
+        manipulationController.findMousePos('up', e);
+    });
+    $("#triangleArea").mouseout(function(e){
+        manipulationController.findMousePos('out', e);
     });
 
     var rotateButton = document.getElementById('rotateButton');
@@ -169,6 +178,9 @@ window.onload = function() {
       drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
     });
 
+    $('#cancelDrawing').click(function(){
+        $('#editModal').css('display', 'none');
+    });
     $('#settingsButton').click(function(){
       $('#settingsModal').css('display', 'block');
     });
@@ -218,6 +230,10 @@ window.onload = function() {
 
     //whenever the window resizes, change the width, height, and position of canvas
     $('body')[0].onresize = function(){
+        var dx = ($('#drawingArea')[0].clientWidth-manipulationCanvas.width)*(manipulationTriangle.anchorPoints[0].x/manipulationCanvas.width);
+        var dy = ($('#drawingArea')[0].clientHeight-manipulationCanvas.height)*(manipulationTriangle.anchorPoints[0].y/manipulationCanvas.height);
+
+       manipulationTriangle.translate({x: dx, y: dy});
        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
        manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
        drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
@@ -228,7 +244,6 @@ window.onload = function() {
       // manipulationController.canvasBoundingRect = manipulationCanvas.getBoundingClientRect();
 
       //manipulationTriangle.anchorPoints[0] = {x: manipulationCanvas.width/2, y: manipulationCanvas.height/2, z: 0};
-      manipulationTriangle.translate(utils.subtract(utils.toPoint([manipulationCanvas.width/2, manipulationCanvas.height/2, 0]),     manipulationTriangle.anchorPoints[0]))
       //TODO: make triangle scale position with canvas on resize
     };
 
