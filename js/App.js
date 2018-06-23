@@ -237,7 +237,14 @@ window.onload = function() {
     $('#undoButton').click(function(){
         manipulationTriangle.undo();
     });
-    
+
+    $('#resetButton').click(function(){
+        manipulationTriangle.reset();
+    });
+
+    $('#redoButton').click(function(){
+        manipulationTriangle.redo();
+    })
     window.onclick = function(event){
         // console.log('**************************');
         // console.log("%cCLICK TARGET: ", goodLog, event.target);

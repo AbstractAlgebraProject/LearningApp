@@ -20,7 +20,8 @@ function TriangleFactory() {
         tri.segmented = config.segmented || false;    //whether the triangle will use the 3 segments for each corner
         tri.pointLabels = config.pointLabels || true;
         tri.canvasSize = {x : config.x, y : config.y} || { x : 0, y : 0}
-
+        tri.lastMove = 0;
+        tri.lastUndo = 0;
         //---triangle point definitions---
         //anchor points are corners A,B,C, and center
         //segment points are midpoints AB, BC, CA
@@ -60,7 +61,8 @@ function TriangleFactory() {
                 move.remaining = 0;
             }
             tri.moveQueue.push(move)
-
+            console.log(tri.movequeue);
+            tri.lastMove = tri.moveQueue.length-1;
         }
 
         //flips triangle across line, adding to move Queue
@@ -82,25 +84,48 @@ function TriangleFactory() {
                 move.remaining = 0;
             }
             tri.moveQueue.push(move)
+            console.log(tri.moveQueue);
+            tri.lastMove = tri.moveQueue.length-1;
         }
 
         tri.undo = function() {
             console.log("UNDO");
-            if(tri.moveQueue.length) {
-                var inverse = tri.moveQueue[tri.moveQueue.length-1];
-                console.log(inverse);
+            while(tri.moveQueue.length && tri.lastMove != -1) {
+                if(tri.lastMove === tri.moveQueue.length) tri.lastMove--;
+                var inverse = tri.moveQueue[tri.lastMove];
+                console.log("Index: ", tri.lastMove);
+                console.log("Moves: ", tri.moveQueue);
                 if(!inverse.inverse) {
                     inverse.remaining = inverse.angle //translating back
                     inverse.inverse = true //set inverse flag to trigger removal after animation
                     tri.moveQueue.push(inverse)
+                    tri.lastUndo = tri.lastMove;
+                    tri.lastMove--;
+                    break;
                 }
-
+                tri.lastMove--;
             }
+        }
 
+        tri.redo = function(){
+            console.log("REDO");
+            while(tri.moveQueue.length){
+                if(tri.lastUndo === tri.moveQueue.length) tri.lastUndo--;
+                var inverse = tri.moveQueue[tri.lastUndo];
+                console.log("Index: ", tri.lastUndo);
+                console.log("Moves: ", tri.moveQueue)
+                if(inverse.inverse){
+                    inverse.inverse = false;
+                    inverse.remaining = inverse.angle;
+                    tri.moveQueue.push(inverse);
+                    break;
+                }
+                tri.lastUndo++;
+            }
         }
 
         tri.translate = function(vector) {
-            console.log("Translating by: ", vector);
+            //console.log("Translating by: ", vector);
             for(point in tri.anchorPoints) {
                 tri.anchorPoints[point] = utils.add(tri.anchorPoints[point], vector)
             }
@@ -172,7 +197,7 @@ function TriangleFactory() {
                         }
                     } else {
                         if (m.inverse) {
-                            tri.moveQueue.splice(2, i-2); //remove the inverse and its original
+                            //tri.moveQueue.pop(); //remove the inverse and its original
                         }
                     }
                 }

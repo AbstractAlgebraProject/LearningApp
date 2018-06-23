@@ -104,8 +104,6 @@ function ManipulationCanvasController(canvas) {
 
           that.flipPoints[1].x = currX;
           that.flipPoints[1].y = currY;
-          console.log(that.flipLine);
-
          }
       }
 
