@@ -85,8 +85,10 @@ function TriangleFactory() {
         }
 
         tri.undo = function() {
+            console.log("UNDO");
             if(tri.moveQueue.length) {
-                var inverse = tri.moveQueue[tri.moveQueue.length-1]
+                var inverse = tri.moveQueue[tri.moveQueue.length-1];
+                console.log(inverse);
                 if(!inverse.inverse) {
                     inverse.remaining = inverse.angle //translating back
                     inverse.inverse = true //set inverse flag to trigger removal after animation
@@ -170,7 +172,6 @@ function TriangleFactory() {
                         }
                     } else {
                         if (m.inverse) {
-                            console.log("splicing at ", i-1)
                             tri.moveQueue.splice(2, i-2); //remove the inverse and its original
                         }
                     }
@@ -181,7 +182,6 @@ function TriangleFactory() {
                     var m = tri.moveQueue[i];   //get corresponding move
                     if (m.remaining > 0) {  //if the move is not done, do it
                         tri.rotateInstant3d(m, m.remaining)
-                        console.log("hereasdfasdfasdf")
 
                     }
                 }

@@ -234,12 +234,15 @@ window.onload = function() {
       drawingCanvas.getContext('2d').clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);  //clears drawing canvas in modal popup
     });
 
+    $('#undoButton').click(function(){
+        manipulationTriangle.undo();
+    });
+    
     window.onclick = function(event){
-        console.log('**************************');
-        console.log("%cCLICK TARGET: ", goodLog, event.target);
-        console.log('**************************');
-        console.log('\n');
-
+        // console.log('**************************');
+        // console.log("%cCLICK TARGET: ", goodLog, event.target);
+        // console.log('**************************');
+        // console.log('\n');
     };
     //one liner that checks if you click outside a modal and closes if true
     $('.modal').on('click', function(event){
@@ -248,7 +251,6 @@ window.onload = function() {
 
     //whenever the window resizes, change the width, height, and position of canvas
     function calcTranslateDiff(point){
-        console.log("POINT: ", point);
         var toReturn = {x: 0, y: 0};
         var drawWidth = $('#drawingArea')[0].clientWidth;
         var drawHeight = $('#drawingArea')[0].clientHeight;

@@ -44,7 +44,17 @@ function ManipulationCanvasController(canvas) {
     ].join(';');
 
     that.setMode = function(mode) {
+        if(that.mode == ''){
+            that.flipPoints[0].x = 0;
+            that.flipPoints[0].y = 0;
+            that.flipPoints[1].x = 0;
+            that.flipPoints[1].y = 0;
+            that.rotatePoint.x = that.canvasBoundingRect.width/2;
+            that.rotatePoint.y = that.canvasBoundingRect.height/2;
+        }
+
         that.mode = mode
+
         if (mode == "rotate") { //reset the point values in preperation for next flip
             that.flipPoints[0].x = 0;
             that.flipPoints[0].y = 0;
@@ -55,6 +65,7 @@ function ManipulationCanvasController(canvas) {
             that.rotatePoint.x = that.canvasBoundingRect.width/2;
             that.rotatePoint.y = that.canvasBoundingRect.height/2;
         }
+
     }
 
     that.getMousePos = function(mouseEvent) {
