@@ -9,28 +9,14 @@ window.onload = function() {
     var drawingCanvas = $('#drawingCanvas')[0]; //canvas for drawing symbols on modal after saving symmetry
 
     var savedSymbols = [];
-
+    var editing = false;    //dumbguy boolean to determine whether drawn symbol is new or edited
     var drawingController = new DrawingCanvasController(drawingCanvas); //controller to manage drawing on modal window
 
-
-    $('#drawingCanvas').mousedown(function(e){
-      drawingController.findMousePos('down', e);
-    });
-
-    $('#drawingCanvas').mousemove(function(e){
-      drawingController.findMousePos('move', e);
-    });
-
-    $('#drawingCanvas').mouseup(function(e){
-      drawingController.findMousePos('up', e);
-    });
-
-    $('#drawingCanvas').mouseout(function(e){
-      drawingController.findMousePos('out', e);
-    });
     //setting size based on calculated %properties in html
     manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
     manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
+
+    console.log($('#drawingContainer')[0].clientHeight);
 
     triConfig = {   //configuration for main triangle object (rotates and flips)
         name : "Test",
@@ -39,31 +25,21 @@ window.onload = function() {
         radius : 100,
         segmented : true,
         timeBound: true,
-        pointLabels: true
+        labels: true
     }
 
     var manipulationTriangle = new triFactory.produceTriangle(triConfig);    //triangle for canvas that will be manipulated
     manipulationTriangle.reset()
 
-    triRenderer.addRenderPair(manipulationTriangle, manipulationCanvas); //set triangle and canvas set to be rendered
+    triRenderer.addRenderPair(manipulationTriangle, manipulationCanvas);    //set triangle and canvas set to be rendered
+
 
     //initializing controller that manages positioning and drawing of flip and rotate points
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
-    //event callbacks
+    //event callback
 
-    var angle = $('#angle').value = 60;
-
-    $('#angle').on('input', function() {
-        angle = this.value;
-    });
-
-    $("#triangleArea").mousedown(function(e){
-        manipulationController.mouseListener(e)
-    });
-
-    var rotateButton = document.getElementById('rotateButton');
-    var flipButton = document.getElementById('flipButton');
+    manipulationController.angle = $('#angle').value = 60;
 
     $("#flipButton").click(function(){
         var flipPoints = manipulationController.flipPoints;
@@ -89,7 +65,7 @@ window.onload = function() {
         flipButton.style.webkitAnimationName = 'none';
 
         if(manipulationController.mode === 'rotate'){
-            manipulationTriangle.rotate(angle, rotatePoint);
+            manipulationTriangle.rotate(manipulationController.angle, rotatePoint);
         }
 
         var rotateButton = this;
@@ -103,63 +79,102 @@ window.onload = function() {
         flipButton.style.opacity = .7;
     });
 
-    $("#resetButton").click(function() {
-        manipulationTriangle.reset();
+    //edit menu callbacks
+    $('#closeSettings').click(function(){
+      $('#settingsModal').css('display', 'none');
+    });
+
+    $('#colors').change(function(){
+      //stub for colors checkbox
+
+    });
+
+    $('#symSnap').change(function(){
+      //stub for symmetry correction checkbox
+    });
+
+    $('#labels').change(function(){
+      //stub for labels checkbox
+    });
+
+    $('#segments').change(function(){
+        //stub for segments checking
+        manipulationTriangle.toggleSegmentation()
     })
 
-    $("#undoButton").click(function() {
-        manipulationTriangle.undo();
-    })
-
-
+    //opens drawing window to save symmetry
     $('#saveButton').click(function(){
-      document.getElementById('saveModal').style.display = 'block';
+      $('#saveModal').css('display', 'block');
       drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
       drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
     });
 
+    //deletes selected drawing
+    $('#deleteDrawing').click(function(){
+      var imgName = $('#editModal').attr('symbolIndex');
+
+      $('#' + imgName).remove();
+      $('#editModal').css('display', 'none');
+    });
+
+    //edits selected drawing
+    $('#editDrawing').click(function(){
+      var imgName = $('#editModal').attr('symbolIndex');
+      editing = true;
+
+      $('#editModal').css('display', 'none');
+      $('#saveModal').css('display', 'block');
+      drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
+      drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
+    });
+
+    $('#settingsButton').click(function(){
+      $('#settingsModal').css('display', 'block');
+    });
+    //clears drawing window
     $('#clearCanvas').click(function(){
       drawingCanvas.getContext('2d').clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);  //clears drawing canvas in modal popup
     });
 
+    //saves drawing in drawing modal
     $('#saveDrawing').click(function(){
-      var data = drawingCanvas.toDataURL('image/png');
+      if(editing){    //if editing an existing symbol
+        var imgName = $('#editModal').attr('symbolIndex');
 
-      savedSymbols.push(data);
+        $('#' + imgName).attr('src', drawingCanvas.toDataURL('image/png'));
+      }
 
-      var tempImg = document.createElement('img');  //creating img element to store canvas contents
-      tempImg.src = data;
-      tempImg.id = 'savedSym' + savedSymbols.length;
-      tempImg.width = $('#savedSymmetries').height() * .8;
-      tempImg.height = $('#savedSymmetries').height() * .8;
-      tempImg.addEventListener('click', playbackSym(savedSymbols.indexOf(data))); //callback should do something useful eventually
-      //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\\/\/\/\/\/\/\/\/\/\\\\
-      //TODO: find out why this listener is only being called once when the element is created
+      else{           //if saving a new symbol
+        var data = drawingCanvas.toDataURL('image/png');  //stores canvas data in .png
 
-      $('#savedSymmetries').append(tempImg);  //append image to container
-
-      console.log(tempImg);
-
+        savedSymbols.push(data);
+        //store symbol in new <img> tag
+        $(document.createElement("img"))
+          .attr({src: data, id: 'savedSym' + savedSymbols.length, width: $('#savedSymmetries').height() * .8, height: $('#savedSymmetries').height() * .8})
+          .appendTo('#savedSymmetries')
+          .click(function(){
+            document.getElementById('editModal').style.display = 'block';
+            document.getElementById('editModal').setAttribute('symbolIndex', this.id);
+        });
+      }
+      //toggle boolean, close modal and clear canvas
+      editing = false;
       document.getElementById('saveModal').style.display = "none";
       drawingCanvas.getContext('2d').clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);  //clears drawing canvas in modal popup
     });
 
-    function playbackSym(index){
-      console.log(index);
-    }
 
     window.onclick = function(event) {
       if (event.target == document.getElementById('saveModal')) {
           document.getElementById('saveModal').style.display = "none";
       }
     }
-
     //whenever the window resizes, change the width, height, and position of canvas
     $('body')[0].onresize = function(){
       manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
       manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
       drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
-      drawingCanvas.height =$('#drawingContainer')[0].clientHeight;
+      drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
 
       manipulationController.canvasBoundingRect = manipulationCanvas.getBoundingClientRect();
 

@@ -3,9 +3,24 @@
 function ManipulationCanvasController(canvas) {
     var that = this;
 
+    that.initialize = function() {
+        that.angle = $('#angle').value = 60;
+
+        $('#angle').on('input', function() {
+            that.angle = this.value;
+        });
+
+        $("#triangleArea").mousedown(function(e){
+            that.mouseListener(e)
+        });
+    }
+    that.initialize();
+
     that.canvas = canvas
     that.context = canvas.getContext('2d')
     that.canvasBoundingRect = canvas.getBoundingClientRect();
+
+    that.angle = 0; //rotation angle
 
     //points used for displaying rotate and flip points
     that.flipPoints = [{x: 0, y:0, z:0}, {x: 0, y:0, z:0}];

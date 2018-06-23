@@ -3,8 +3,8 @@
   --bgColor: #d0fccc;
   --offWhite: #eff5ff;
   --triBlue: #42a4e5;
-  --triGreen: #9a66f4;
-  --triPurple: #16c2cc;
+  --triPurple: #9a66f4;
+  --triGreen: #16c2cc;
 }
 
 html, body{
@@ -104,6 +104,72 @@ input:focus{
     padding: 10px;
 }
 
+.checkboxContainer input{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkboxContainer{
+  display: block;
+  position: relative;
+  cursor: pointer;
+  font-size: 22px;
+  padding-left: 30px;
+  margin-bottom: 15px;
+}
+
+.checkmark{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 30px;
+  width: 30px;
+  background-color: var(--buttonColor);
+  opacity: .5;
+  border-radius: 5px;
+}
+
+.checkboxContainer:hover input ~ .checkmark{
+  opacity: 1;
+}
+
+.checkboxContainer input:checked ~ .checkmark{
+  background-color: var(--triPurple);
+  opacity: 1;
+}
+
+.checkmark:after{
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkboxContainer input:checked ~ .checkmark:after{
+  display: block;
+}
+
+.checkboxContainer .checkmark:after{
+  left: 11px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--offWhite);
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+#closeSettings{
+  width: 30px;
+  height: 30px;
+  left: 0;
+  top: 0;
+  position: relative;
+  padding: 0 0 10px 0;
+  margin: 0 0 10px 0;
+  background-color: var(--triPurple);
+}
+
 #drawingContainer{
   width: 100%;
   height: 500px;
@@ -160,4 +226,9 @@ input:focus{
 #saveButton{
   width: 87%;
   background-color: var(--triBlue);
+}
+
+#settingsButton{
+  width: 87%;
+  background-color: var(--triGreen);
 }

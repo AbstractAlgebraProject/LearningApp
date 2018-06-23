@@ -30,6 +30,7 @@
             <button id='undoButton'>Undo</button>
             <button id='saveButton'>Save</button>
             <input type='text' id='angle' value = 60 placeholder="Angle">
+            <button id='settingsButton'>Settings</button>
           </div>
 
           <div id='rightColumn' class='unselectable'>
@@ -39,12 +40,12 @@
             </div>
 
             <div id='savedSymmetries'>
-                <ol>
-                    <!--save symmettries are inserted here-->
-                </ol>
+
             </div>
           </div>
         </div>
+
+        <!--MODALS-->
 
         <div id='saveModal' class='modal'>
           <div class='modalContent'>
@@ -57,12 +58,40 @@
           </div>
         </div>
 
-        <div id='editModal' class='modal'> <!--able to replay moves-->
-            <div class="modalContent">
-                <div id='moveContainer' class='sidebar'>
-                    <ol id='moveList'>
-                    </ol>
-                </div>
+
+        <div id='editModal' class = 'modal' symbolIndex=''>
+          <div class='modalContent'>
+            <button id='deleteDrawing' class='modalButton'>Delete</button>
+            <button id='editDrawing' class='modalButton'>Edit</button>
+          </div>
+          <div class="modalContent">
+              <div id='moveContainer' class='sidebar'>
+                  <ol id='moveList'>
+                  </ol>
+              </div>
+          </div>
+        </div>
+
+        <div id='settingsModal' class='modal'>
+            <div class='modalContent'>
+                <button id='closeSettings'>x</button>
+                <br>
+                <label class='checkboxContainer'>&nbsp Colors
+                    <input id='colors' type='checkbox'>
+                    <span class='checkmark'></span>
+                </label>
+                <label class='checkboxContainer'>&nbsp Symmetry Correction
+                    <input id='symSnap' type='checkbox'>
+                    <span class='checkmark'></span>
+                </label>
+                <label class='checkboxContainer'>&nbsp Labels
+                    <input id='labels' type='checkbox'>
+                    <span class='checkmark'></span>
+                </label>
+                <label class='checkboxContainer'>&nbsp Segments
+                    <input id='segments' type='checkbox'>
+                    <span class='checkmark'></span>
+                </label>
             </div>
         </div>
 

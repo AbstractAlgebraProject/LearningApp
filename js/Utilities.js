@@ -133,5 +133,11 @@ var utils = {
             }
         }
         return inv
+    },
+
+    removeIndex: function(array, index){
+      if (index !== -1) {
+          array.splice(index, 1);
+      }
     }
 }

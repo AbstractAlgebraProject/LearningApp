@@ -15,7 +15,7 @@ function TriangleFactory() {
         tri.moveQueue = []; //queued moves
         tri.animationSpeed = config.animationSpeed || 10000;  //time taken (inMS) for flip/rotate actions
         tri.radius = config.radius || 0;  //radius to define triangle size
-        tri.baseColor = config.baseColor || "#0000000";//default color
+        tri.baseColor = config.baseColor || "#0000000"; //default color
         tri.segmentColors = config.segmentColors || ["#42a4e5", "#9a66f4", "#16c2cc"];
         tri.segmented = config.segmented || false;    //whether the triangle will use the 3 segments for each corner
         tri.pointLabels = config.pointLabels || true;
