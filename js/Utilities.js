@@ -19,7 +19,6 @@ var utils = {
     distanceBetween: function(a, b){  //returns absolute distance between two points
         var p = utils.subtract(a, b);
 
-        console.log(p);
         return Math.sqrt(p.x*p.x + p.y*p.y + p.z*p.z);
     },
 

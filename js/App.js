@@ -15,24 +15,24 @@ window.onload = function() {
     //apparently you can use CSS in console.log() lmao
     //type console.log("%c somestring", CSS);
     //the following strings can be used as CSS strings for logging prettily
-    const goodLog = [
-        'background: green',
-        'color: white',
-        'display: block',
-        'text-align: center'
-    ].join(';');
-    const badLog = [
-        'background: red',
-        'color: black',
-        'display: block',
-        'text-align: center'
-    ].join(';');
-    const lineBreak = [
-        'background: black',
-        'color: black',
-        'display: block',
-        'text-align: center'
-    ].join(';');
+    // const goodLog = [
+    //     'background: green',
+    //     'color: white',
+    //     'display: block',
+    //     'text-align: center'
+    // ].join(';');
+    // const badLog = [
+    //     'background: red',
+    //     'color: black',
+    //     'display: block',
+    //     'text-align: center'
+    // ].join(';');
+    // const lineBreak = [
+    //     'background: black',
+    //     'color: black',
+    //     'display: block',
+    //     'text-align: center'
+    // ].join(';');
 
     $('#drawingCanvas').mousedown(function(e){
       drawingController.findMousePos('down', e);
@@ -62,7 +62,8 @@ window.onload = function() {
         radius : 100,
         segmented : true,
         timeBound: true,
-        pointLabels: true
+        pointLabels: true,
+        baseColor: "#42a4e5"
     }
 
     var BGtriConfig = {   //configuration for main triangle object (rotates and flips)
@@ -159,7 +160,7 @@ window.onload = function() {
 
     utils.syncCheckbox($("#labels"), manipulationTriangle.pointLabels);
     $('#labels').change(function(){
-      manipulationTriangle.toggleLables();
+      manipulationTriangle.toggleLabels();
     });
 
     utils.syncCheckbox($("#segments"), manipulationTriangle.segmented);

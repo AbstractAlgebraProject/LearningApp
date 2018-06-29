@@ -78,8 +78,26 @@ function ManipulationCanvasController(canvas) {
 
     var prevX=prevY=currX=currY=0;
     var down = false;
+    var dragFlag = 0;
+
+    that.findClickedPoint = function(){
+        for(i = 0; i < 2; i++){
+            if(utils.distanceBetween(that.flipPoints[i], {x: currX, y: currY, z: 0}) < 1.5*that.pointRadius){
+                $('body').css('cursor', 'pointer');
+                dragFlag = i+1;
+            }
+        }
+        if(dragFlag === 0){
+            $('body').css('cursor', 'default');
+        }
+
+        console.log(dragFlag);
+    }
+
     that.findMousePos = function(flag, e){
       if(flag == 'down'){
+        dragFlag = 0;
+
         prevX = currX;
         prevY = currY;
 
@@ -87,24 +105,40 @@ function ManipulationCanvasController(canvas) {
         currY = e.clientY - $('#triangleArea').offset().top;
         that.rotatePoint.x = currX;
         that.rotatePoint.y = currY;
-        that.flipPoints[0].x = currX;
-        that.flipPoints[0].y = currY;
-        that.flipPoints[1].x = currX;
-        that.flipPoints[1].y = currY;
+
+        that.findClickedPoint();
+
+        if(dragFlag === 0){
+            that.flipPoints[0].x = currX;
+            that.flipPoints[0].y = currY;
+            that.flipPoints[1].x = currX;
+            that.flipPoints[1].y = currY;
+        }
         down = true;
       }
 
       if(flag == 'move'){
+        currX = e.clientX - $('#triangleArea').offset().left;
+        currY = e.clientY - $('#triangleArea').offset().top;
+
         if(down){
+
           prevX = currX;
           prevY = currY;
 
-          currX = e.clientX - $('#triangleArea').offset().left;
-          currY = e.clientY - $('#triangleArea').offset().top;
-
-          that.flipPoints[1].x = currX;
-          that.flipPoints[1].y = currY;
-         }
+          if(dragFlag !== 0){
+              that.flipPoints[dragFlag-1].x = currX;
+              that.flipPoints[dragFlag-1].y = currY;
+          }
+          else if(dragFlag === 0){
+              that.flipPoints[1].x = currX;
+              that.flipPoints[1].y = currY;
+          }
+        }
+        else{
+            dragFlag = 0;
+            that.findClickedPoint();
+        }
       }
 
       if(flag == 'out' || flag == 'up'){

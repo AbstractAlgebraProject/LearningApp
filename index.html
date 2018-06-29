@@ -23,26 +23,26 @@
         <div id="header"></div>
 
         <div id='playground'>
-          <div id='buttonContainer'>
-            <button id='rotateButton'>Rotate</button>
-            <button id='flipButton'>Flip</button>
-            <button id='redoButton'>Redo</button>
-            <button id='undoButton'>Undo</button>
-            <button id='saveButton'>Save</button>
-            <input type='text' id='angle'  placeholder="Angle">
-            <button id='settingsButton'>Settings</button>
-            <button id='resetButton'>Reset</button>
-          </div>
+            <div id='buttonContainer'>
+              <button id='rotateButton'>Rotate</button>
+              <button id='flipButton'>Flip</button>
+              <button id='redoButton'>Redo</button>
+              <button id='undoButton'>Undo</button>
+              <button id='saveButton'>Save</button>
+              <input type='text' id='angle'  placeholder="Angle">
+              <button id='settingsButton'>Settings</button>
+              <button id='resetButton'>Reset</button>
+            </div>
 
             <div id='drawingArea' class='unselectable'>
               <canvas id='triangleArea' class ='unselectable' width='250' height='250'>
-            </canvas>
+              </canvas>
             </div>
 
             <div id='savedSymmetries'>
 
             </div>
-          </div>
+        </div>
 
         <!--MODALS-->
 
@@ -70,20 +70,20 @@
             <div class='modalContent'>
                 <button id='closeSettings'>x</button>
                 <br>
-                <label class='checkboxContainer'>&nbsp Colors
-                    <input id='colors' type='checkbox'>
+                <!-- <label class='checkboxContainer'>&nbsp Colors
+                    <input id='colors' type='checkbox' checked>
                     <span class='checkmark'></span>
-                </label>
+                </label> -->
                 <label class='checkboxContainer'>&nbsp Symmetry Correction
-                    <input id='symSnap' type='checkbox'>
+                    <input id='symSnap' type='checkbox' checked>
                     <span class='checkmark'></span>
                 </label>
                 <label class='checkboxContainer'>&nbsp Labels
-                    <input id='labels' type='checkbox'>
+                    <input id='labels' type='checkbox' checked>
                     <span class='checkmark'></span>
                 </label>
                 <label class='checkboxContainer'>&nbsp Segments
-                    <input id='segments' type='checkbox'>
+                    <input id='segments' type='checkbox' checked>
                     <span class='checkmark'></span>
                 </label>
             </div>

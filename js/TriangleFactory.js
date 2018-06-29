@@ -20,6 +20,7 @@ function TriangleFactory() {
         tri.segmented = utils.DefaultorValue(config.segmented, false);    //whether the triangle will use the 3 segments for each corner
         tri.pointLabels = utils.DefaultorValue(config.pointLabels, true)
         tri.canvasSize = utils.DefaultorValue({x : config.x, y : config.y}, { x : 0, y : 0}, selector=config.x+config.y)
+        tri.fontSize = tri.radius/2;
         tri.lastMove = 0;
         tri.lastUndo = 0;
 
@@ -37,7 +38,7 @@ function TriangleFactory() {
         }
 
         tri.toggleLabels = function() {
-            tri.pointLables = !tri.pointLabels;
+            tri.pointLabels = !tri.pointLabels;
         }
 
         tri.reset = function() {
