@@ -10,17 +10,17 @@ function TriangleFactory() {
         tf.produced += 1
         //TRIANGLE MEMBER VARIABLES
         //TODO make this work with false goshdarn
-        tri.name = config.name || tf.produced;
-        tri.timeBound = config.timeBound || false;   //whether the triangle will be animated
+        tri.name = utils.DefaultorValue(config.name, tf.produced)
+        tri.timeBound = utils.DefaultorValue(config.timeBound, false);   //whether the triangle will be animated
         tri.moveQueue = []; //queued moves
-        tri.animationSpeed = config.animationSpeed || 10000;  //time taken (inMS) for flip/rotate actions
-        tri.radius = config.radius || 0;  //radius to define triangle size
-        tri.baseColor = config.baseColor || "#0000000"; //default color
-        tri.segmentColors = config.segmentColors || ["#42a4e5", "#9a66f4", "#16c2cc"];
-        tri.segmented = config.segmented || false;    //whether the triangle will use the 3 segments for each corner
-        tri.pointLabels = config.pointLabels || true;
-        tri.canvasSize = {x : config.x, y : config.y} || { x : 0, y : 0}
-
+        tri.animationSpeed = utils.DefaultorValue(config.animationSpeed, 10000);  //time taken (inMS) for flip/rotate actions
+        tri.radius = utils.DefaultorValue(config.radius, 0);  //radius to define triangle size
+        tri.baseColor = utils.DefaultorValue(config.baseColor, "#0000000"); //default color
+        tri.segmentColors = utils.DefaultorValue(config.segmentColors, ["#42a4e5", "#9a66f4", "#16c2cc"]);
+        tri.segmented = utils.DefaultorValue(config.segmented, false);    //whether the triangle will use the 3 segments for each corner
+        tri.pointLabels = utils.DefaultorValue(config.pointLabels, true)
+        tri.canvasSize = utils.DefaultorValue({x : config.x, y : config.y}, { x : 0, y : 0}, selector=config.x+config.y)
+        console.log(tri);
         //---triangle point definitions---
         //anchor points are corners A,B,C, and center
         //segment points are midpoints AB, BC, CA
@@ -32,6 +32,10 @@ function TriangleFactory() {
         //TRIANGLE MEMBER FUNCTION
         tri.toggleSegmentation = function() {
             tri.segmented = !tri.segmented;
+        }
+
+        tri.toggleLabels = function() {
+            tri.pointLables = !tri.pointLabels;
         }
 
         tri.reset = function() {

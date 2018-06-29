@@ -139,5 +139,24 @@ var utils = {
       if (index !== -1) {
           array.splice(index, 1);
       }
+  },
+
+    syncCheckbox: function(box, value){
+        if (value == false) {
+            box.removeAttr('checked');
+        } else if (value == true) {
+            box.attr('checked');
+        }
+    },
+
+    DefaultorValue: function(value, defaulted, selector="value") {
+        if(selector === "value") {
+            selector = value;
+        }
+        if (typeof(selector) != 'undefined') {
+            return value;
+        } else {
+            return defaulted;
+        }
     }
 }
