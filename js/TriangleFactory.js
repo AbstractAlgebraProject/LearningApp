@@ -20,7 +20,7 @@ function TriangleFactory() {
         tri.segmented = utils.DefaultorValue(config.segmented, false);    //whether the triangle will use the 3 segments for each corner
         tri.pointLabels = utils.DefaultorValue(config.pointLabels, true)
         tri.canvasSize = utils.DefaultorValue({x : config.x, y : config.y}, { x : 0, y : 0}, selector=config.x+config.y)
-        console.log(tri);
+
         //---triangle point definitions---
         //anchor points are corners A,B,C, and center
         //segment points are midpoints AB, BC, CA
@@ -50,11 +50,15 @@ function TriangleFactory() {
                 p1 : [point.x, point.y, -1], //defining rotation axis on z
                 p2 : [point.x, point.y, 1],
                 u : [0, 0, 0],    //unit vector corresponding to axis through center
-                remaining : angle, //radians remaining before move completion
-                angle : angle
+                remaining : Math.abs(angle), //radians remaining before move completion
+                angle : angle,
+                reverse : false
             }
             move.u = utils.normalize(move.p1, move.p2)
 
+            if (angle < 0) {
+                move.reverse = true;
+            }
             if(!radians) {
                 move.remaining = tri.toRadians(angle)    //converting angle to raidans
                 move.angle = tri.toRadians(angle)
@@ -63,14 +67,13 @@ function TriangleFactory() {
                 tri.rotateInstant3d(move, move.remaining);
                 move.remaining = 0;
             }
+            console.log(move)
             tri.moveQueue.push(move)
 
         }
 
         //flips triangle across line, adding to move Queue
         tri.flip = function(point1, point2) {
-            console.log(point1, point2);
-
             var move = {
                 p1 : [point1.x, point1.y, 0], //defining rotation axis on xy
                 p2 : [point2.x, point2.y, 0],
@@ -89,10 +92,8 @@ function TriangleFactory() {
         }
 
         tri.undo = function() {
-            console.log("UNDO");
             if(tri.moveQueue.length) {
                 var inverse = tri.moveQueue[tri.moveQueue.length-1];
-                console.log(inverse);
                 if(!inverse.inverse) {
                     inverse.remaining = inverse.angle //translating back
                     inverse.inverse = true //set inverse flag to trigger removal after animation
@@ -104,7 +105,6 @@ function TriangleFactory() {
         }
 
         tri.translate = function(vector) {
-            console.log("Translating by: ", vector);
             for(point in tri.anchorPoints) {
                 tri.anchorPoints[point] = utils.add(tri.anchorPoints[point], vector)
             }
@@ -144,7 +144,6 @@ function TriangleFactory() {
                 var p = utils.average(tri.anchorPoints[(i%3)+1], tri.anchorPoints[((i+1)%3)+1]);
 
                 tri.segmentPoints.push(p);
-                //console.log("SegmentPoints: " , i , p);
             }
         }
 
@@ -165,7 +164,7 @@ function TriangleFactory() {
                             radians -= m.remaining
                             m.remaining = 0
                         }
-                        if (m.inverse) {
+                        if (m.inverse || m.reverse) {
                             tri.rotateInstant3d(m, -1 * rotation)
                         } else {
                             tri.rotateInstant3d(m, rotation)
