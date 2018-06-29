@@ -58,10 +58,13 @@ function TriangleRenderer() {
             context.fill();
         }
         if(tri.pointLabels) {
-            context.font = '48px serif'
-            for (var i = 0; i < tri.anchorPoints.length; i++) {
-                point = tri.anchorPoints[i]
-                context.fillText(point[0], point[1], tri.ABCMap[i])
+            context.font = '48px serif';
+            tri.generateTextPoints();
+
+            for (var i = 0; i < tri.textPoints.length; i++) {
+                var point = tri.textPoints[i];
+                var char = tri.ABCMap[i];
+                context.fillText(char, point.x - context.measureText(char).width/2, point.y + 24);
             }
         }
 

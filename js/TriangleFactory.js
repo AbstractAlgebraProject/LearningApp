@@ -26,9 +26,9 @@ function TriangleFactory() {
         //anchor points are corners A,B,C, and center
         //segment points are midpoints AB, BC, CA
         tri.anchorPoints = []; //four points that define triangle
+        tri.textPoints = [];
         tri.ABCMap = config.ABCMap || "ABC";    //ordering of symmettry points compared to anchor points
         tri.segmentPoints = []; //three midpoints that define corner blocks
-
 
         //TRIANGLE MEMBER FUNCTION
         tri.toggleSegmentation = function() {
@@ -61,7 +61,6 @@ function TriangleFactory() {
                 move.remaining = 0;
             }
             tri.moveQueue.push(move)
-            console.log(tri.movequeue);
             tri.lastMove = tri.moveQueue.length-1;
         }
 
@@ -167,6 +166,29 @@ function TriangleFactory() {
                 tri.segmentPoints.push(p);
                 //console.log("SegmentPoints: " , i , p);
             }
+
+        }
+
+        tri.generateTextPoints = function(){
+            center = tri.anchorPoints[0];
+            tri.textPoints = [];
+
+            for (var i = 1; i < tri.anchorPoints.length; i++) {
+                point = tri.anchorPoints[i];
+                char = tri.ABCMap[i-1];
+                var newPoint = utils.toPoint([
+                    1.3*(point.x-center.x)+center.x,
+                    1.3*(point.y-center.y)+center.y,
+                    0
+                ]);
+                // newPoint = utils.toPoint([
+                //     newPoint.x + center.x,
+                //     newPoint.y + center.y,
+                //     newPoint.z + center.z
+                // ]);
+
+                tri.textPoints.push(newPoint);
+            }
         }
 
         tri.advanceAnimation = function(elapsedMS) {
@@ -188,8 +210,10 @@ function TriangleFactory() {
                         }
                         if (m.inverse) {
                             tri.rotateInstant3d(m, -1 * rotation)
+                            //tri.generateTextPoints();
                         } else {
                             tri.rotateInstant3d(m, rotation)
+                            //tri.generateTextPoints();
                         }
 
                         if (radians <= 0){
@@ -211,8 +235,8 @@ function TriangleFactory() {
                     }
                 }
             }
-            tri.generateSegmentPoints()
-
+            tri.generateSegmentPoints();
+            //tri.generateTextPoints();
         }
 
         tri.rotateInstant3d = function(move, theta) {
