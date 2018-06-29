@@ -235,7 +235,11 @@ input:focus{
   background-color: var(--triGreen);
 }
 
-#clearButton{
+#cancelDrawing{
+    grid-column: 1/3;
+}
+
+#resetButton{
   grid-column: 1/3 !important;
   background-color: var(--triPurple);
 }
