@@ -239,7 +239,7 @@ input:focus{
     grid-column: 1/3;
 }
 
-#redoButton{
+#resetButton{
   grid-column: 1/3 !important;
   background-color: var(--triPurple);
 }

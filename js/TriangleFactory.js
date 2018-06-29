@@ -10,18 +10,19 @@ function TriangleFactory() {
         tf.produced += 1
         //TRIANGLE MEMBER VARIABLES
         //TODO make this work with false goshdarn
-        tri.name = config.name || tf.produced;
-        tri.timeBound = config.timeBound || false;   //whether the triangle will be animated
+        tri.name = utils.DefaultorValue(config.name, tf.produced)
+        tri.timeBound = utils.DefaultorValue(config.timeBound, false);   //whether the triangle will be animated
         tri.moveQueue = []; //queued moves
-        tri.animationSpeed = config.animationSpeed || 10000;  //time taken (inMS) for flip/rotate actions
-        tri.radius = config.radius || 0;  //radius to define triangle size
-        tri.baseColor = config.baseColor || "#0000000"; //default color
-        tri.segmentColors = config.segmentColors || ["#42a4e5", "#9a66f4", "#16c2cc"];
-        tri.segmented = config.segmented || false;    //whether the triangle will use the 3 segments for each corner
-        tri.pointLabels = config.pointLabels || true;
-        tri.canvasSize = {x : config.x, y : config.y} || { x : 0, y : 0}
+        tri.animationSpeed = utils.DefaultorValue(config.animationSpeed, 10000);  //time taken (inMS) for flip/rotate actions
+        tri.radius = utils.DefaultorValue(config.radius, 0);  //radius to define triangle size
+        tri.baseColor = utils.DefaultorValue(config.baseColor, "#0000000"); //default color
+        tri.segmentColors = utils.DefaultorValue(config.segmentColors, ["#42a4e5", "#9a66f4", "#16c2cc"]);
+        tri.segmented = utils.DefaultorValue(config.segmented, false);    //whether the triangle will use the 3 segments for each corner
+        tri.pointLabels = utils.DefaultorValue(config.pointLabels, true)
+        tri.canvasSize = utils.DefaultorValue({x : config.x, y : config.y}, { x : 0, y : 0}, selector=config.x+config.y)
         tri.lastMove = 0;
         tri.lastUndo = 0;
+
         //---triangle point definitions---
         //anchor points are corners A,B,C, and center
         //segment points are midpoints AB, BC, CA
@@ -33,6 +34,10 @@ function TriangleFactory() {
         //TRIANGLE MEMBER FUNCTION
         tri.toggleSegmentation = function() {
             tri.segmented = !tri.segmented;
+        }
+
+        tri.toggleLabels = function() {
+            tri.pointLables = !tri.pointLabels;
         }
 
         tri.reset = function() {
@@ -47,27 +52,30 @@ function TriangleFactory() {
                 p1 : [point.x, point.y, -1], //defining rotation axis on z
                 p2 : [point.x, point.y, 1],
                 u : [0, 0, 0],    //unit vector corresponding to axis through center
-                remaining : angle, //radians remaining before move completion
-                angle : angle
+                remaining : Math.abs(angle), //radians remaining before move completion
+                angle : angle,
+                reverse : false
             }
             move.u = utils.normalize(move.p1, move.p2)
 
+            if (angle < 0) {
+                move.reverse = true;
+            }
             if(!radians) {
-                move.remaining = tri.toRadians(angle)    //converting angle to raidans
+                move.remaining = tri.toRadians(Math.abs(angle))    //converting angle to raidans
                 move.angle = tri.toRadians(angle)
             }
             if(!tri.timeBound) {
                 tri.rotateInstant3d(move, move.remaining);
                 move.remaining = 0;
             }
+            console.log(move)
             tri.moveQueue.push(move)
             tri.lastMove = tri.moveQueue.length-1;
         }
 
         //flips triangle across line, adding to move Queue
         tri.flip = function(point1, point2) {
-            console.log(point1, point2);
-
             var move = {
                 p1 : [point1.x, point1.y, 0], //defining rotation axis on xy
                 p2 : [point2.x, point2.y, 0],
@@ -124,7 +132,6 @@ function TriangleFactory() {
         }
 
         tri.translate = function(vector) {
-            //console.log("Translating by: ", vector);
             for(point in tri.anchorPoints) {
                 tri.anchorPoints[point] = utils.add(tri.anchorPoints[point], vector)
             }
@@ -164,7 +171,6 @@ function TriangleFactory() {
                 var p = utils.average(tri.anchorPoints[(i%3)+1], tri.anchorPoints[((i+1)%3)+1]);
 
                 tri.segmentPoints.push(p);
-                //console.log("SegmentPoints: " , i , p);
             }
 
         }
@@ -208,7 +214,7 @@ function TriangleFactory() {
                             radians -= m.remaining
                             m.remaining = 0
                         }
-                        if (m.inverse) {
+                        if (m.inverse || m.reverse) {
                             tri.rotateInstant3d(m, -1 * rotation)
                             //tri.generateTextPoints();
                         } else {

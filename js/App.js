@@ -157,14 +157,14 @@ window.onload = function() {
       //stub for symmetry correction checkbox
     });
 
+    utils.syncCheckbox($("#labels"), manipulationTriangle.pointLabels);
     $('#labels').change(function(){
-      //stub for labels checkbox
-      manipulationTriangle.pointLabels = !manipulationTri.pointLabels
+      manipulationTriangle.toggleLables();
     });
 
+    utils.syncCheckbox($("#segments"), manipulationTriangle.segmented);
     $('#segments').change(function(){
-        //stub for segments checking
-        manipulationTriangle.toggleSegmentation()
+        manipulationTriangle.toggleSegmentation();
     })
 
     //opens drawing window to save symmetry
