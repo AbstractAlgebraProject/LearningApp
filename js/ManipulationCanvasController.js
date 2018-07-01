@@ -80,6 +80,7 @@ function ManipulationCanvasController(canvas) {
     var down = false;
     var dragFlag = 0;
 
+    //detects which flippoint is being clicked, hovered, or dragged
     that.findClickedPoint = function(){
         for(i = 0; i < 2; i++){
             if(utils.distanceBetween(that.flipPoints[i], {x: currX, y: currY, z: 0}) < 1.5*that.pointRadius){
@@ -91,7 +92,7 @@ function ManipulationCanvasController(canvas) {
             $('body').css('cursor', 'default');
         }
 
-        console.log(dragFlag);
+        //console.log(dragFlag);
     }
 
     that.findMousePos = function(flag, e){

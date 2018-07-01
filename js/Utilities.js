@@ -138,7 +138,7 @@ var utils = {
       if (index !== -1) {
           array.splice(index, 1);
       }
-  },
+    },
 
     syncCheckbox: function(box, value){
         if (value == false) {

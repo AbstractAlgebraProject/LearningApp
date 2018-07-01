@@ -64,7 +64,8 @@ function TriangleRenderer() {
             for (var i = 0; i < tri.textPoints.length; i++) {
                 var point = tri.textPoints[i];
                 var char = tri.ABCMap[i];
-                context.fillStyle = tri.segmentColors[i];
+                if(tri.segmented)   context.fillStyle = tri.segmentColors[i];
+                else context.fillStyle = tri.segmentColors[0];
                 context.fillText(char, point.x - context.measureText(char).width/2, point.y + 24);
             }
         }
