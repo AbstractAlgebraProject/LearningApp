@@ -112,6 +112,7 @@ window.onload = function() {
 
         if(manipulationController.mode === 'flip'){
             manipulationTriangle.flip(flipPoints[0], flipPoints[1]);
+            console.log(manipulationTriangle.moveQueue);
         }
 
         var flipButton = this;
@@ -132,6 +133,7 @@ window.onload = function() {
 
         if(manipulationController.mode === 'rotate'){
             manipulationTriangle.rotate(manipulationController.angle, rotatePoint);
+            console.log(manipulationTriangle.moveQueue);
         }
 
         var rotateButton = this;
@@ -270,7 +272,7 @@ window.onload = function() {
         toReturn.x = (drawWidth-canvasWidth)*(point.x/canvasWidth);
         toReturn.y = (drawHeight-canvasHeight)*(point.y/canvasHeight);
         toReturn.z = 0;
-        
+
         return toReturn;
     }
 
@@ -286,8 +288,8 @@ window.onload = function() {
        manipulationController.rotatePoint = resizePoint(manipulationController.rotatePoint);
        manipulationController.flipPoints[0] = resizePoint(manipulationController.flipPoints[0]);
        manipulationController.flipPoints[1] = resizePoint(manipulationController.flipPoints[1]);
-       manipulationController.flipLine.p1 = resizePoint(manipulationController.flipLine.p1);
-       manipulationController.flipLine.p2 =  resizePoint(manipulationController.flipLine.p2);
+       manipulationController.flipLine.p1 = manipulationController.flipPoints[0];
+       manipulationController.flipLine.p2 = manipulationController.flipPoints[1];
        bgTri.translate({x: ($('#drawingArea')[0].clientWidth-manipulationCanvas.width)/2, y: ($('#drawingArea')[0].clientHeight-manipulationCanvas.height)/2, z: 0});
 
        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
