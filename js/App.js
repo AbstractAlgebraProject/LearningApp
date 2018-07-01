@@ -59,7 +59,7 @@ window.onload = function() {
         name : "Test",
         x : manipulationCanvas.width,
         y : manipulationCanvas.height,
-        radius : 100,
+        radius : 150,
         segmented : true,
         timeBound: true,
         pointLabels: true
@@ -103,8 +103,6 @@ window.onload = function() {
         manipulationController.findMousePos('out', e);
     });
 
-    manipulationController.angle = $('#angle').value = 60;
-
     $("#flipButton").click(function(){
         var flipPoints = manipulationController.flipPoints;
         rotateButton.style.webkitAnimationName = '';
@@ -129,6 +127,7 @@ window.onload = function() {
         flipButton.style.webkitAnimationName = 'none';
 
         if(manipulationController.mode === 'rotate'){
+            console.log("YANGLE : " + manipulationController.angle);
             manipulationTriangle.rotate(manipulationController.angle, rotatePoint);
         }
 
@@ -169,9 +168,14 @@ window.onload = function() {
 
     //opens drawing window to save symmetry
     $('#saveButton').click(function(){
-      $('#saveModal').css('display', 'block');
-      drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
-      drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
+        if(hasSymmetry(manipulationTriangle, bgTri, 10)) {
+            $('#saveModal').css('display', 'block');
+            drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
+            drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
+        } else {
+            $("#saveErrorModal").css('display', 'block');
+        }
+
     });
 
     $('#clearButton').click(function(){
@@ -200,9 +204,11 @@ window.onload = function() {
     $('#cancelDrawing').click(function(){
         $('#editModal').css('display', 'none');
     });
+
     $('#settingsButton').click(function(){
       $('#settingsModal').css('display', 'block');
     });
+
     //clears drawing window
     $('#clearCanvas').click(function(){
       drawingCanvas.getContext('2d').clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);  //clears drawing canvas in modal popup
@@ -246,12 +252,7 @@ window.onload = function() {
     $('#redoButton').click(function(){
         manipulationTriangle.redo();
     })
-    window.onclick = function(event){
-        // console.log('**************************');
-        // console.log("%cCLICK TARGET: ", goodLog, event.target);
-        // console.log('**************************');
-        // console.log('\n');
-    };
+
     //one liner that checks if you click outside a modal and closes if true
     $('.modal').on('click', function(event){
         if(!$(event.target).parents('.modal').length) this.style.display = 'none';
