@@ -9,7 +9,7 @@
         <script type='text/javascript' src="js/TriangleFactory.js"></script>             <!--TriangleFactory-->
         <script type='text/javascript' src="js/TriangleRenderer.js"></script>            <!--TriangleRenderer-->
         <script type='text/javascript' src="js/ManipulationCanvasController.js"></script><!--ManipulationCanvasController-->
-        <script type='text/javascript' src="js/SymmetryCreator.js"></script>
+        <script type='text/javascript' src="js/SymmetryPlayground"></script>
 
         <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet'>
     </head>
@@ -19,12 +19,8 @@
 
         <div id='playground'>
             <div id='buttonContainer'>
-              <button id='rotateButton'>Rotate</button>
-              <button id='flipButton'>Flip</button>
               <button id='redoButton'>Redo</button>
               <button id='undoButton'>Undo</button>
-              <button id='saveButton'>Save</button>
-              <input type='text' id='angle'  placeholder="Angle">
               <button id='settingsButton'>Settings</button>
               <button id='resetButton'>Reset</button>
             </div>
@@ -40,24 +36,6 @@
         </div>
 
         <!--MODALS-->
-
-        <div id='saveModal' class='modal'>
-          <div class='modalContent'>
-            <div id='drawingContainer' class='unselectable'>
-              <canvas id='drawingCanvas' class='unselectable' width='100' height='100'></canvas>
-            </div>
-
-            <button id='saveDrawing' class='modalButton'>Save</button>
-            <button id='clearCanvas' class='modalButton'>Clear</button>
-          </div>
-        </div>
-
-        <div id="saveErrorModal" class='modal'>
-            <div class='modalContent'>
-                <p class='modalText'> Are you sure that is actually a symmettry? </p>
-                <button id='okFine' class='modalButton'>No, I am not</button>
-            </div>
-        </div>
 
 
         <div id='editModal' class = 'modal' symbolIndex=''>

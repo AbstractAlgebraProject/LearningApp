@@ -8,7 +8,14 @@ window.onload = function() {
     var manipulationCanvas = $("#triangleArea")[0]; //element that will hold the rotated/fliped triangle
     var drawingCanvas = $('#drawingCanvas')[0]; //canvas for drawing symbols on modal after saving symmetry
 
-    var savedSymbols = [];
+    var savedSymmetries = utils.LoadSymmetryList();
+    for(var it = 0; it < savedSymmetries.length; it++) {
+        $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(){
+            document.getElementById('editModal').style.display = 'block';
+            document.getElementById('editModal').setAttribute('symbolIndex', this.id);
+        });
+    }
+
     var editing = false;    //dumbguy boolean to determine whether drawn symbol is new or edited
     var drawingController = new DrawingCanvasController(drawingCanvas); //controller to manage drawing on modal window
 
@@ -227,15 +234,18 @@ window.onload = function() {
       else{           //if saving a new symbol
         var data = drawingCanvas.toDataURL('image/png');  //stores canvas data in .png
 
-        savedSymbols.push(data);
-        //store symbol in new <img> tag
         $(document.createElement("img"))
-          .attr({src: data, id: 'savedSym' + savedSymbols.length, width: $('#savedSymmetries').height() * .8, height: $('#savedSymmetries').height() * .8})
+          .attr({src: data, id: 'savedSym' + savedSymmetries.length, width: $('#savedSymmetries').height() * .8, height: $('#savedSymmetries').height() * .8})
           .appendTo('#savedSymmetries')
           .click(function(){
             document.getElementById('editModal').style.display = 'block';
             document.getElementById('editModal').setAttribute('symbolIndex', this.id);
         });
+
+        savedSymmetries.push({'data' : data, 'moves' : manipulationTriangle.moveQueue, elem : $("#savedSym" + savedSymmetries.length).prop('outerHTML')});
+        utils.StoreSymmetryList(savedSymmetries);
+        //store symbol in new <img> tag
+
       }
       //toggle boolean, close modal and clear canvas
       editing = false;
@@ -271,7 +281,7 @@ window.onload = function() {
         toReturn.x = (drawWidth-canvasWidth)*(point.x/canvasWidth);
         toReturn.y = (drawHeight-canvasHeight)*(point.y/canvasHeight);
         toReturn.z = 0;
-        
+
         return toReturn;
     }
 
