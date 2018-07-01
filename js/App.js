@@ -110,7 +110,7 @@ window.onload = function() {
 
         if(manipulationController.mode === 'flip'){
             manipulationTriangle.flip(flipPoints[0], flipPoints[1]);
-            console.log(manipulationTriangle.moveQueue);
+            console.log("MOVES", manipulationTriangle.moveQueue);
         }
 
         var flipButton = this;
@@ -126,19 +126,19 @@ window.onload = function() {
 
     $("#rotateButton").click(function(){
         var rotatePoint = manipulationController.rotatePoint;
-        console.log(rotatePoint);
         flipButton.style.webkitAnimationName = 'none';
 
         if(manipulationController.mode === 'rotate'){
-            console.log("YANGLE : " + manipulationController.angle);
             manipulationTriangle.rotate(manipulationController.angle, rotatePoint);
-            console.log(manipulationTriangle.moveQueue);
+            console.log("MOVES", manipulationTriangle.moveQueue);
         }
 
         var rotateButton = this;
         this.style.webkitAnimationName='oscillate';
         this.style.webkitAnimationDuration = '1s';
         this.style.webkitAnimationIterationCount = 'infinite';
+
+        manipulationController.triCenter = manipulationTriangle.anchorPoints[0];
 
         manipulationController.setMode('rotate');
 
