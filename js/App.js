@@ -15,24 +15,24 @@ window.onload = function() {
     //apparently you can use CSS in console.log() lmao
     //type console.log("%c somestring", CSS);
     //the following strings can be used as CSS strings for logging prettily
-    const goodLog = [
-        'background: green',
-        'color: white',
-        'display: block',
-        'text-align: center'
-    ].join(';');
-    const badLog = [
-        'background: red',
-        'color: black',
-        'display: block',
-        'text-align: center'
-    ].join(';');
-    const lineBreak = [
-        'background: black',
-        'color: black',
-        'display: block',
-        'text-align: center'
-    ].join(';');
+    // const goodLog = [
+    //     'background: green',
+    //     'color: white',
+    //     'display: block',
+    //     'text-align: center'
+    // ].join(';');
+    // const badLog = [
+    //     'background: red',
+    //     'color: black',
+    //     'display: block',
+    //     'text-align: center'
+    // ].join(';');
+    // const lineBreak = [
+    //     'background: black',
+    //     'color: black',
+    //     'display: block',
+    //     'text-align: center'
+    // ].join(';');
 
     $('#drawingCanvas').mousedown(function(e){
       drawingController.findMousePos('down', e);
@@ -62,7 +62,8 @@ window.onload = function() {
         radius : 150,
         segmented : true,
         timeBound: true,
-        pointLabels: true
+        pointLabels: true,
+        baseColor: "#42a4e5"
     }
 
     var BGtriConfig = {   //configuration for main triangle object (rotates and flips)
@@ -124,6 +125,7 @@ window.onload = function() {
 
     $("#rotateButton").click(function(){
         var rotatePoint = manipulationController.rotatePoint;
+        console.log(rotatePoint);
         flipButton.style.webkitAnimationName = 'none';
 
         if(manipulationController.mode === 'rotate'){
@@ -158,7 +160,7 @@ window.onload = function() {
 
     utils.syncCheckbox($("#labels"), manipulationTriangle.pointLabels);
     $('#labels').change(function(){
-      manipulationTriangle.toggleLables();
+      manipulationTriangle.toggleLabels();
     });
 
     utils.syncCheckbox($("#segments"), manipulationTriangle.segmented);
@@ -268,27 +270,32 @@ window.onload = function() {
 
         toReturn.x = (drawWidth-canvasWidth)*(point.x/canvasWidth);
         toReturn.y = (drawHeight-canvasHeight)*(point.y/canvasHeight);
-
+        toReturn.z = 0;
+        
         return toReturn;
     }
 
     function resizePoint(point){
         point = utils.add(point, calcTranslateDiff(point));
+        point.z = 0;
+
+        return point;
     }
 
     $('body')[0].onresize = function(){
        manipulationTriangle.translate(calcTranslateDiff(manipulationTriangle.anchorPoints[0]));
-       resizePoint(manipulationController.rotatePoint);
-       resizePoint(manipulationController.flipPoints[0]);
-       resizePoint(manipulationController.flipPoints[1]);
-       resizePoint(manipulationController.flipLine.p1);
-       resizePoint(manipulationController.flipLine.p2);
-       bgTri.translate({x: ($('#drawingArea')[0].clientWidth-manipulationCanvas.width)/2, y: ($('#drawingArea')[0].clientHeight-manipulationCanvas.height)/2});
+       manipulationController.rotatePoint = resizePoint(manipulationController.rotatePoint);
+       manipulationController.flipPoints[0] = resizePoint(manipulationController.flipPoints[0]);
+       manipulationController.flipPoints[1] = resizePoint(manipulationController.flipPoints[1]);
+       manipulationController.flipLine.p1 = resizePoint(manipulationController.flipLine.p1);
+       manipulationController.flipLine.p2 =  resizePoint(manipulationController.flipLine.p2);
+       bgTri.translate({x: ($('#drawingArea')[0].clientWidth-manipulationCanvas.width)/2, y: ($('#drawingArea')[0].clientHeight-manipulationCanvas.height)/2, z: 0});
 
        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
        manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
        drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
        drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
+       ManipulationCanvasController.canvas = manipulationCanvas;
        //console.log(manipulationCanvas.width);
        //console.log(manipulationCanvas.height);
       //

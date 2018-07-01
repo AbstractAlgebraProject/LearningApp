@@ -20,6 +20,7 @@ function TriangleFactory() {
         tri.segmented = utils.DefaultorValue(config.segmented, false);    //whether the triangle will use the 3 segments for each corner
         tri.pointLabels = utils.DefaultorValue(config.pointLabels, true)
         tri.canvasSize = utils.DefaultorValue({x : config.x, y : config.y}, { x : 0, y : 0}, selector=config.x+config.y)
+        tri.fontSize = tri.radius/2;
         tri.lastMove = 0;
         tri.lastUndo = 0;
 
@@ -37,7 +38,7 @@ function TriangleFactory() {
         }
 
         tri.toggleLabels = function() {
-            tri.pointLables = !tri.pointLabels;
+            tri.pointLabels = !tri.pointLabels;
         }
 
         tri.reset = function() {
@@ -77,7 +78,7 @@ function TriangleFactory() {
         //flips triangle across line, adding to move Queue
         tri.flip = function(point1, point2) {
             var move = {
-                p1 : [point1.x, point1.y, 0], //defining rotation axis on xy
+                p1 : [point1.x, point1.y, 0],    //defining rotation axis on xy
                 p2 : [point2.x, point2.y, 0],
                 u : [0, 0, 0],                  //unit vector corresponding to rotation axis
                 remaining : Math.PI/2,               //radians remaining in move
@@ -103,9 +104,9 @@ function TriangleFactory() {
                 console.log("Index: ", tri.lastMove);
                 console.log("Moves: ", tri.moveQueue);
                 if(!inverse.inverse) {
-                    inverse.remaining = inverse.angle //translating back
-                    inverse.inverse = true //set inverse flag to trigger removal after animation
-                    tri.moveQueue.push(inverse)
+                    inverse.remaining = inverse.angle; //translating back
+                    inverse.inverse = true; //set inverse flag to trigger removal after animation
+                    tri.moveQueue.push(inverse);
                     tri.lastUndo = tri.lastMove;
                     tri.lastMove--;
                     break;
@@ -120,7 +121,7 @@ function TriangleFactory() {
                 if(tri.lastUndo === tri.moveQueue.length) tri.lastUndo--;
                 var inverse = tri.moveQueue[tri.lastUndo];
                 console.log("Index: ", tri.lastUndo);
-                console.log("Moves: ", tri.moveQueue)
+                console.log("Moves: ", tri.moveQueue);
                 if(inverse.inverse){
                     inverse.inverse = false;
                     inverse.remaining = inverse.angle;
@@ -241,6 +242,7 @@ function TriangleFactory() {
                     }
                 }
             }
+            ///console.log(tri.moveQueue);
             tri.generateSegmentPoints();
             //tri.generateTextPoints();
         }
