@@ -4,8 +4,8 @@ function ManipulationCanvasController(canvas) {
     var that = this;
 
     that.initialize = function() {
-        that.angle = $('#angle').value = 60;
-
+        that.angle = utils.DefaultorValue($("#angle").value, 0);
+        console.log("Angle : " + that.angle)
         $('#angle').on('input', function() {
             that.angle = this.value;
         });

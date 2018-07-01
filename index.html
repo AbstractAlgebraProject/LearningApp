@@ -1,19 +1,15 @@
 <html>
     <head>
-    
-      <link rel='stylesheet' href='style.css'>
-
-
+     <meta charset="UTF-8">
+        <link rel='stylesheet' href='style.css'>
         <script type='text/javascript' src="js/jquery.js"></script>                      <!--JQUERY-->
         <script type='text/javascript' src="js/Utilities.js"></script>                   <!--Utilities-->
+        <script type='text/javascript' src="js/SymmetryAnalyzer.js"></script>            <!--SymmetryAnalyzer-->
         <script type='text/javascript' src="js/DrawingCanvasController.js"></script>     <!--DrawingCanvasController-->
-        <script type='text/javascript' src="js/TriangleFactory.js"></script>             <!--SymmetryAnalyzer-->
-        <script type='text/javascript' src="js/TriangleRenderer.js"></script>            <!--TriangleFactory-->
-        <script type='text/javascript' src="js/SymmetryAnalyzer.js"></script>            <!--TriangleRenderer-->
+        <script type='text/javascript' src="js/TriangleFactory.js"></script>             <!--TriangleFactory-->
+        <script type='text/javascript' src="js/TriangleRenderer.js"></script>            <!--TriangleRenderer-->
         <script type='text/javascript' src="js/ManipulationCanvasController.js"></script><!--ManipulationCanvasController-->
         <script type='text/javascript' src="js/App.js"></script>
-
-
 
         <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet'>
     </head>
@@ -54,6 +50,13 @@
             <button id='saveDrawing' class='modalButton'>Save</button>
             <button id='clearCanvas' class='modalButton'>Clear</button>
           </div>
+        </div>
+
+        <div id="saveErrorModal" class='modal'>
+            <div class='modalContent'>
+                <p class='modalText'> Are you sure that is actually a symmettry? </p>
+                <button id='okFine' class='modalButton'>No, I am not</button>
+            </div>
         </div>
 
 

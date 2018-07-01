@@ -148,6 +148,7 @@ var utils = {
         }
     },
 
+    //used for setting defaults since the or operator is behaving poorly.
     DefaultorValue: function(value, defaulted, selector="value") {
         if(selector === "value") {
             selector = value;

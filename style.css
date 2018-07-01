@@ -111,6 +111,11 @@ input:focus{
     height: 50vh;
     padding: 10px;
 }
+
+.modalText {
+    font-size: 32px;
+    font-family: 'cabin';
+}
 .checkboxContainer input{
     position: absolute;
     opacity: 0;
