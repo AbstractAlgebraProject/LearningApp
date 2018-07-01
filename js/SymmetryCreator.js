@@ -117,6 +117,7 @@ window.onload = function() {
 
         if(manipulationController.mode === 'flip'){
             manipulationTriangle.flip(flipPoints[0], flipPoints[1]);
+            console.log("MOVES", manipulationTriangle.moveQueue);
         }
 
         var flipButton = this;
@@ -132,18 +133,19 @@ window.onload = function() {
 
     $("#rotateButton").click(function(){
         var rotatePoint = manipulationController.rotatePoint;
-        console.log(rotatePoint);
         flipButton.style.webkitAnimationName = 'none';
 
         if(manipulationController.mode === 'rotate'){
-            console.log("YANGLE : " + manipulationController.angle);
             manipulationTriangle.rotate(manipulationController.angle, rotatePoint);
+            console.log("MOVES", manipulationTriangle.moveQueue);
         }
 
         var rotateButton = this;
         this.style.webkitAnimationName='oscillate';
         this.style.webkitAnimationDuration = '1s';
         this.style.webkitAnimationIterationCount = 'infinite';
+
+        manipulationController.triCenter = manipulationTriangle.anchorPoints[0];
 
         manipulationController.setMode('rotate');
 
@@ -297,8 +299,8 @@ window.onload = function() {
        manipulationController.rotatePoint = resizePoint(manipulationController.rotatePoint);
        manipulationController.flipPoints[0] = resizePoint(manipulationController.flipPoints[0]);
        manipulationController.flipPoints[1] = resizePoint(manipulationController.flipPoints[1]);
-       manipulationController.flipLine.p1 = resizePoint(manipulationController.flipLine.p1);
-       manipulationController.flipLine.p2 =  resizePoint(manipulationController.flipLine.p2);
+       manipulationController.flipLine.p1 = manipulationController.flipPoints[0];
+       manipulationController.flipLine.p2 = manipulationController.flipPoints[1];
        bgTri.translate({x: ($('#drawingArea')[0].clientWidth-manipulationCanvas.width)/2, y: ($('#drawingArea')[0].clientHeight-manipulationCanvas.height)/2, z: 0});
 
        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;

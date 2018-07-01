@@ -48,31 +48,33 @@ function TriangleFactory() {
 
         //rotates triangle specified angle in degrees or radians, adding to moveQueue
         tri.rotate = function(angle, point, radians=false) {
+            if(angle != 0){
+                var move = {
+                    p1 : [point.x, point.y, -1], //defining rotation axis on z
+                    p2 : [point.x, point.y, 1],
+                    u : [0, 0, 0],    //unit vector corresponding to axis through center
+                    remaining : Math.abs(angle), //radians remaining before move completion
+                    angle : angle,
+                    reverse : false
+                }
+                move.u = utils.normalize(move.p1, move.p2)
 
-            var move = {
-                p1 : [point.x, point.y, -1], //defining rotation axis on z
-                p2 : [point.x, point.y, 1],
-                u : [0, 0, 0],    //unit vector corresponding to axis through center
-                remaining : Math.abs(angle), //radians remaining before move completion
-                angle : angle,
-                reverse : false
+                if (angle < 0) {
+                    move.reverse = true;
+                }
+                if(!radians) {
+                    move.remaining = tri.toRadians(Math.abs(angle))    //converting angle to raidans
+                    move.angle = tri.toRadians(angle)
+                }
+                if(!tri.timeBound) {
+                    tri.rotateInstant3d(move, move.remaining);
+                    move.remaining = 0;
+                }
+                //console.log(move)
+                tri.moveQueue.push(move)
+                tri.lastMove = tri.moveQueue.length-1;
             }
-            move.u = utils.normalize(move.p1, move.p2)
-
-            if (angle < 0) {
-                move.reverse = true;
-            }
-            if(!radians) {
-                move.remaining = tri.toRadians(Math.abs(angle))    //converting angle to raidans
-                move.angle = tri.toRadians(angle)
-            }
-            if(!tri.timeBound) {
-                tri.rotateInstant3d(move, move.remaining);
-                move.remaining = 0;
-            }
-            console.log(move)
-            tri.moveQueue.push(move)
-            tri.lastMove = tri.moveQueue.length-1;
+            else alert("Please enter a nonzero angle");
         }
 
         //flips triangle across line, adding to move Queue
@@ -98,7 +100,7 @@ function TriangleFactory() {
 
         tri.undo = function() {
             console.log("UNDO");
-            while(tri.moveQueue.length && tri.lastMove != -1) {
+            while(tri.moveQueue.length) {
                 if(tri.lastMove === tri.moveQueue.length) tri.lastMove--;
                 var inverse = tri.moveQueue[tri.lastMove];
                 console.log("Index: ", tri.lastMove);
@@ -107,8 +109,8 @@ function TriangleFactory() {
                     inverse.remaining = inverse.angle; //translating back
                     inverse.inverse = true; //set inverse flag to trigger removal after animation
                     tri.moveQueue.push(inverse);
+                    tri.moveQueue.pop();
                     tri.lastUndo = tri.lastMove;
-                    tri.lastMove--;
                     break;
                 }
                 tri.lastMove--;
@@ -118,14 +120,16 @@ function TriangleFactory() {
         tri.redo = function(){
             console.log("REDO");
             while(tri.moveQueue.length){
-                if(tri.lastUndo === tri.moveQueue.length) tri.lastUndo--;
+                if(tri.lastUndo === -1) tri.lastUndo++;
                 var inverse = tri.moveQueue[tri.lastUndo];
                 console.log("Index: ", tri.lastUndo);
                 console.log("Moves: ", tri.moveQueue);
                 if(inverse.inverse){
-                    inverse.inverse = false;
                     inverse.remaining = inverse.angle;
+                    inverse.inverse = false;
                     tri.moveQueue.push(inverse);
+                    tri.moveQueue.pop();
+                    tri.lastMove = tri.lastUndo;
                     break;
                 }
                 tri.lastUndo++;
@@ -228,7 +232,9 @@ function TriangleFactory() {
                         }
                     } else {
                         if (m.inverse) {
-                            //tri.moveQueue.pop(); //remove the inverse and its original
+                            //console.log("REMOVING...");
+                            //tri.moveQueue.splice(i, 1);
+                            break;
                         }
                     }
                 }

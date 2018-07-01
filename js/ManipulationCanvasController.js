@@ -15,7 +15,7 @@ function ManipulationCanvasController(canvas) {
     that.canvas = canvas
     that.context = canvas.getContext('2d')
     that.canvasBoundingRect = canvas.getBoundingClientRect();
-
+    that.triCenter = {x: that.canvasBoundingRect.width, y: that.canvasBoundingRect.height};
     that.angle = 0; //rotation angle
 
     //points used for displaying rotate and flip points
@@ -49,22 +49,23 @@ function ManipulationCanvasController(canvas) {
             that.flipPoints[0].y = 0;
             that.flipPoints[1].x = 0;
             that.flipPoints[1].y = 0;
-            that.rotatePoint.x = that.canvasBoundingRect.width/2;
-            that.rotatePoint.y = that.canvasBoundingRect.height/2;
         }
+        that.rotatePoint.x = that.triCenter.x;
+        that.rotatePoint.y = that.triCenter.y;
+        //}
 
-        that.mode = mode
+        that.mode = mode;
 
-        if (mode == "rotate") { //reset the point values in preperation for next flip
-            that.flipPoints[0].x = 0;
-            that.flipPoints[0].y = 0;
-            that.flipPoints[1].x = 0;
-            that.flipPoints[1].y = 0;
-        }
-        else if(mode == 'flip'){
-            that.rotatePoint.x = that.canvasBoundingRect.width/2;
-            that.rotatePoint.y = that.canvasBoundingRect.height/2;
-        }
+        // if (mode == "rotate") { //reset the point values in preperation for next flip
+        //     that.flipPoints[0].x = 0;
+        //     that.flipPoints[0].y = 0;
+        //     that.flipPoints[1].x = 0;
+        //     that.flipPoints[1].y = 0;
+        // }
+        // else if(mode == 'flip'){
+        //     that.rotatePoint.x = that.triCenter.x;
+        //     that.rotatePoint.y = that.triCenter.y;
+        // }
 
     }
 
