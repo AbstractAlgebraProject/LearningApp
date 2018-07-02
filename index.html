@@ -27,6 +27,7 @@
               <input type='text' id='angle'  placeholder="Angle">
               <button id='settingsButton'>Settings</button>
               <button id='resetButton'>Reset</button>
+              <button id='gotoPlayground' onclick='location.href = "SymmetryPlayground.html"'>Playground</button>
             </div>
 
             <div id='drawingArea' class='unselectable'>
@@ -54,8 +55,9 @@
 
         <div id="saveErrorModal" class='modal'>
             <div class='modalContent'>
-                <p class='modalText'> Are you sure that is actually a symmettry? </p>
-                <button id='okFine' class='modalButton'>No, I am not</button>
+                <p id ='confirmText' class='modalText'> Are you sure that is actually a symmettry? </p>
+                <button id='notSym' class='modalButton'>No, I am not</button>
+                <!-- <button id='yesSym' class='modalButton'>Yes, I am sure</button> -->
             </div>
         </div>
 
