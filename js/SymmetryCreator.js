@@ -82,6 +82,8 @@ window.onload = function() {
         rotateButton.style.webkitAnimationName = '';
 
         if(manipulationController.mode === 'flip'){
+            if(flipPoints[0] = flipPoints[1]) flipPoints[0] = utils.add(flipPoints[0], {x: 1, y: 1, z: 0});
+            
             manipulationTriangle.flip(flipPoints[0], flipPoints[1]);
             console.log("MOVES", manipulationTriangle.moveQueue);
         }
