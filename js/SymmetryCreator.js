@@ -83,6 +83,8 @@ window.onload = function() {
         rotateButton.style.webkitAnimationName = '';
 
         if(manipulationController.mode === 'flip'){
+            if(flipPoints[0] = flipPoints[1]) flipPoints[0] = utils.add(flipPoints[0], {x: 1, y: 1, z: 0});
+
             manipulationTriangle.flip(flipPoints[0], flipPoints[1]);
             console.log("MOVES", manipulationTriangle.moveQueue);
         }
@@ -125,6 +127,9 @@ window.onload = function() {
       $('#settingsModal').css('display', 'none');
     });
 
+    $('#notSym').click(function(){
+        $('#saveErrorModal').css('display', 'none');
+    })
     $('#colors').change(function(){
       //stub for colors checkbox
 
@@ -228,8 +233,7 @@ window.onload = function() {
 
     $('#redoButton').click(function(){
         manipulationTriangle.redo();
-    })
-
+    });
     //one liner that checks if you click outside a modal and closes if true
     $('.modal').on('click', function(event){
         if(!$(event.target).parents('.modal').length) this.style.display = 'none';
