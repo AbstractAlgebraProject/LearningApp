@@ -158,5 +158,17 @@ var utils = {
         } else {
             return defaulted;
         }
+    },
+
+    StoreSymmetryList: function(list) {
+        sessionStorage.setItem('SymmetryList', JSON.stringify(list));
+    },
+
+    LoadSymmetryList: function() {
+        if(sessionStorage.getItem('SymmetryList')) {
+            return JSON.parse(sessionStorage.getItem('SymmetryList'));
+        } else {
+            return [];
+        }
     }
 }
