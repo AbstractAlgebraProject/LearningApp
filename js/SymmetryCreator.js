@@ -41,27 +41,6 @@ window.onload = function() {
     //     'text-align: center'
     // ].join(';');
 
-    $('#drawingCanvas').mousedown(function(e){
-      drawingController.findMousePos('down', e);
-    });
-
-    $('#drawingCanvas').mousemove(function(e){
-      drawingController.findMousePos('move', e);
-    });
-
-    $('#drawingCanvas').mouseup(function(e){
-      drawingController.findMousePos('up', e);
-    });
-
-    $('#drawingCanvas').mouseout(function(e){
-      drawingController.findMousePos('out', e);
-    });
-    //setting size based on calculated %properties in html
-    manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
-    manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
-
-    console.log($('#drawingContainer')[0].clientHeight);
-
     triConfig = {   //configuration for main triangle object (rotates and flips)
         name : "Test",
         x : manipulationCanvas.width,
@@ -97,19 +76,6 @@ window.onload = function() {
 
     //initializing controller that manages positioning and drawing of flip and rotate points
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
-
-    $("#triangleArea").mousedown(function(e){
-        manipulationController.findMousePos('down', e);
-    });
-    $("#triangleArea").mousemove(function(e){
-        manipulationController.findMousePos('move', e);
-    });
-    $("#triangleArea").mouseup(function(e){
-        manipulationController.findMousePos('up', e);
-    });
-    $("#triangleArea").mouseout(function(e){
-        manipulationController.findMousePos('out', e);
-    });
 
     $("#flipButton").click(function(){
         var flipPoints = manipulationController.flipPoints;
