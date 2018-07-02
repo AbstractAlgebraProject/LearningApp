@@ -4,6 +4,24 @@ function ManipulationCanvasController(canvas) {
     var that = this;
 
     that.initialize = function() {
+
+        //setting size based on calculated %properties in html
+        that.width = $('#drawingArea')[0].clientWidth;
+        that.height = $('#drawingArea')[0].clientHeight;
+
+        $("#triangleArea").mousedown(function(e){
+            that.findMousePos('down', e);
+        });
+        $("#triangleArea").mousemove(function(e){
+            that.findMousePos('move', e);
+        });
+        $("#triangleArea").mouseup(function(e){
+            that.findMousePos('up', e);
+        });
+        $("#triangleArea").mouseout(function(e){
+            that.findMousePos('out', e);
+        });
+
         that.angle = utils.DefaultorValue($("#angle").value, 0);
         console.log("Angle : " + that.angle)
         $('#angle').on('input', function() {
