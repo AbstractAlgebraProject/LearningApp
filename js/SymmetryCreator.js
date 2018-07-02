@@ -1,5 +1,3 @@
-
-
 window.onload = function() {
     var that = this;
     var triFactory = new TriangleFactory();
@@ -41,6 +39,8 @@ window.onload = function() {
     //     'text-align: center'
     // ].join(';');
 
+    manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
+    manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
     triConfig = {   //configuration for main triangle object (rotates and flips)
         name : "Test",
         x : manipulationCanvas.width,
@@ -77,13 +77,12 @@ window.onload = function() {
     //initializing controller that manages positioning and drawing of flip and rotate points
     var manipulationController = new ManipulationCanvasController(manipulationCanvas)
 
+
     $("#flipButton").click(function(){
         var flipPoints = manipulationController.flipPoints;
         rotateButton.style.webkitAnimationName = '';
 
         if(manipulationController.mode === 'flip'){
-            if(flipPoints[0] = flipPoints[1]) flipPoints[0] = utils.add(flipPoints[0], {x: 1, y: 1, z: 0});
-            
             manipulationTriangle.flip(flipPoints[0], flipPoints[1]);
             console.log("MOVES", manipulationTriangle.moveQueue);
         }
@@ -155,10 +154,6 @@ window.onload = function() {
             $("#saveErrorModal").css('display', 'block');
         }
 
-    });
-
-    $('#clearButton').click(function(){
-      window.location.reload();
     });
 
     //deletes selected drawing

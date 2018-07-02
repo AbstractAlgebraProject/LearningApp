@@ -5,9 +5,7 @@ function ManipulationCanvasController(canvas) {
 
     that.initialize = function() {
 
-        //setting size based on calculated %properties in html
-        that.width = $('#drawingArea')[0].clientWidth;
-        that.height = $('#drawingArea')[0].clientHeight;
+        //setting size based on calculated %properties in htm
 
         $("#triangleArea").mousedown(function(e){
             that.findMousePos('down', e);
