@@ -45,11 +45,12 @@ function ManipulationCanvasController(canvas) {
 
     that.setMode = function(mode) {
         if(that.mode == ''){
-            that.flipPoints[0].x = 0;
-            that.flipPoints[0].y = 0;
-            that.flipPoints[1].x = 0;
-            that.flipPoints[1].y = 0;
+            that.flipPoints[0].x = that.triCenter.x/2 + 200;
+            that.flipPoints[0].y = that.triCenter.y/2;
+            that.flipPoints[1].x = that.triCenter.x/2 - 200;
+            that.flipPoints[1].y = that.triCenter.y/2;
         }
+        console.log(that.flipPoints)
         that.rotatePoint.x = that.triCenter.x;
         that.rotatePoint.y = that.triCenter.y;
         //}
