@@ -7,7 +7,6 @@ window.onload = function() {
     var drawingCanvas = $('#drawingCanvas')[0]; //canvas for drawing symbols on modal after saving symmetry
 
     var savedSymmetries = utils.LoadSymmetryList();
-    print(savedSymmetries)
     for(var it = 0; it < savedSymmetries.length; it++) {
         $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(event){
             document.getElementById('editModal').style.display = 'block';
@@ -206,7 +205,7 @@ window.onload = function() {
 
       else{           //if saving a new symbol
         var data = drawingCanvas.toDataURL('image/png');  //stores canvas data in .png
-        var uniqueID = String((new Date)(d.getTime()))
+        var uniqueID = String((new Date).getTime())
         $(document.createElement("img"))
           .attr({src: data, id: 'savedSym' + uniqueID, width: $('#savedSymmetries').height() * .8, height: $('#savedSymmetries').height() * .8})
           .appendTo('#savedSymmetries')
@@ -215,7 +214,7 @@ window.onload = function() {
             document.getElementById('editModal').setAttribute('symbolIndex', this.id);
         });
 
-        savedSymmetries.push({'data' : data, 'moves' : manipulationTriangle.moveQueue, elem : $("#savedSym" + savedSymmetries.length).prop('outerHTML'), 'id' : uniqueID});
+        savedSymmetries.push({'data' : data, 'moves' : manipulationTriangle.moveQueue, 'elem' : $("#savedSym" + uniqueID).prop('outerHTML'), 'id' : uniqueID});
         utils.StoreSymmetryList(savedSymmetries);
         //store symbol in new <img> tag
 
