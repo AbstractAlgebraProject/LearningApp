@@ -218,7 +218,7 @@ window.onload = function() {
             console.log('savedSym' + savedSymmetries.length);
         });
 
-        savedSymmetries.push({'data' : data, 'moves' : manipulationTriangle.moveQueue, 'elem' : $("#savedSym" + savedSymmetries.length).prop('outerHTML'), 'id' : uniqueID});
+        savedSymmetries.push({'data' : data, 'moves' : manipulationTriangle.moveQueue, 'elem' : $("#savedSym" + uniqueID).prop('outerHTML'), 'id' : uniqueID});
         utils.StoreSymmetryList(savedSymmetries);
         //store symbol in new <img> tag
 

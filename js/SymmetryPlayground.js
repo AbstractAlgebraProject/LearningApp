@@ -12,12 +12,13 @@ window.onload = function() {
     var savedSymmetries = utils.LoadSymmetryList();
     console.log(savedSymmetries);
     for(var it = 0; it < savedSymmetries.length; it++) {
-        $("#savedSymmetries").append(savedSymmetries[it]['id']).click(function(){
+        savedSymmetries[it]['moves'][0]['keystone'] = true
+        savedSymmetries[it]['moves'][savedSymmetries[it]['moves'].length-1]['keystone'] = true
+        $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(){
             $('#replayModal').css('display', 'block');
             // addMoveQueue(savedSymmetries[it]['moves']);
-            savedSymmetries[it]['moves'][0]['keystone'] = true
-            savedSymmetries[it]['moves'][-1]['keystone'] = true
-            addMoveQueue(savedSymmetries[it]['moves'])
+
+            addMoveQueue(savedSymmetries[it-1]['moves'])
         });
     }
 
@@ -131,7 +132,7 @@ window.onload = function() {
 
        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
        manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
-       ManipulationCanvasController.canvas = manipulationCanvas;
+       //ManipulationCanvasController.canvas = manipulationCanvas;
        //console.log(manipulationCanvas.width);
        //console.log(manipulationCanvas.height);
       //
