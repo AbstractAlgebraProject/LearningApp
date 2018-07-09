@@ -105,7 +105,7 @@ window.onload = function() {
         flipButton.style.webkitAnimationName = 'none';
 
         if(manipulationController.mode === 'rotate'){
-            manipulationTriangle.rotate(manipulationController.angle, rotatePoint);
+            manipulationTriangle.rotate(manipulationController.angle, rotatePoint, radians=manipulationController.radians);
             console.log("MOVES", manipulationTriangle.moveQueue);
         }
 
@@ -130,14 +130,6 @@ window.onload = function() {
     $('#notSym').click(function(){
         $('#saveErrorModal').css('display', 'none');
     })
-    $('#colors').change(function(){
-      //stub for colors checkbox
-
-    });
-
-    $('#symSnap').change(function(){
-      //stub for symmetry correction checkbox
-    });
 
     utils.syncCheckbox($("#labels"), manipulationTriangle.pointLabels);
     $('#labels').change(function(){
@@ -149,9 +141,22 @@ window.onload = function() {
         manipulationTriangle.toggleSegmentation();
     })
 
+    utils.syncCheckbox($("#degrees"),  manipulationController.degrees)
+    $("#degrees").change(function(){
+        manipulationController.toggleAngleFormat()
+        $("#angle").attr("placeholder", "Angle " + String(manipulationController.radians ? "(R)" : "(D)"))
+    })
+
+    $("#toleranceSlider").attr("value", manipulationController.tolerance)
+    document.getElementById("toleranceSlider").addEventListener('input', function(event) {
+        val = event.target.value
+        manipulationController.setToleranceLevel(val)
+        $("#toleranceSliderText").text(" Symmetry Tolerance: " + String(val) + " pixels")
+    })
+
     //opens drawing window to save symmetry
     $('#saveButton').click(function(){
-        if(hasSymmetry(manipulationTriangle, bgTri, 10)) {
+        if(hasSymmetry(manipulationTriangle, bgTri, manipulationController.tolerance)) {
             $('#saveModal').css('display', 'block');
             drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
             drawingCanvas.height = $('#drawingContainer')[0].clientHeight;

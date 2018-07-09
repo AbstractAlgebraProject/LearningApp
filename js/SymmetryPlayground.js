@@ -17,6 +17,7 @@ window.onload = function() {
         }
         $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(event){
             data = $("#" + event.target.id).attr("moves")
+            dataJSON = JSON.parse(data)
             addMoveQueue(JSON.parse(data))
         }).attr("moves", savedSymmetries[it]['moves']);
     }
@@ -138,8 +139,6 @@ window.onload = function() {
         window.requestAnimationFrame(render);
         manipulationCanvas.getContext('2d').clearRect(0, 0, manipulationCanvas.width, manipulationCanvas.height);     //clears canvas
         triRenderer.render();
-        manipulationController.render();
-
     }
 
     render();

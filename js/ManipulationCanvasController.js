@@ -33,6 +33,9 @@ function ManipulationCanvasController(canvas) {
     that.canvasBoundingRect = canvas.getBoundingClientRect();
     that.triCenter = {x: that.canvasBoundingRect.width, y: that.canvasBoundingRect.height};
     that.angle = 0; //rotation angle
+    that.degrees = true;
+    that.radians = false;
+    that.tolerance = 10;
 
     //points used for displaying rotate and flip points
     that.flipPoints = [{x: 0, y:0, z:0}, {x: 0, y:0, z:0}];
@@ -46,18 +49,13 @@ function ManipulationCanvasController(canvas) {
     //mode ("rotate" or "flip")
     that.mode = "";
 
-    const goodLog = [
-        'background: green',
-        'color: white',
-        'display: block',
-        'text-align: center'
-    ].join(';');
-    const badLog = [
-        'background: red',
-        'color: black',
-        'display: block',
-        'text-align: center'
-    ].join(';');
+    that.setToleranceLevel = function(newlevel) {
+        that.tolerance = newlevel
+    }
+    
+    that.toggleAngleFormat = function() {
+        that.radians = !that.radians; that.degrees = !that.degrees;
+    }
 
     that.setMode = function(mode) {
         if(that.mode == ''){
@@ -66,10 +64,8 @@ function ManipulationCanvasController(canvas) {
             that.flipPoints[1].x = that.triCenter.x/2 - 200;
             that.flipPoints[1].y = that.triCenter.y/2;
         }
-        console.log(that.flipPoints)
         that.rotatePoint.x = that.triCenter.x;
         that.rotatePoint.y = that.triCenter.y;
-        //}
 
         that.mode = mode;
 

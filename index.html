@@ -24,7 +24,7 @@
               <button id='redoButton'>Redo</button>
               <button id='undoButton'>Undo</button>
               <button id='saveButton'>Save</button>
-              <input type='text' id='angle'  placeholder="Angle">
+              <input type='text' id='angle'  placeholder="Angle (D)">
               <button id='settingsButton'>Settings</button>
               <button id='resetButton'>Reset</button>
               <button id='gotoPlayground' onclick='location.href = "SymmetryPlayground.html"'>Playground</button>
@@ -90,8 +90,13 @@
                     <input id='segments' type='checkbox' checked>
                     <span class='checkmark'></span>
                 </label>
-                <label class='sliderContainer'>&nbsp Symmetry Tolerance
-                    <input id='tolerance' class='slider' type='range' min='0' max='10' value='5'>
+                <label class='checkboxContainer'>&nbsp Degrees
+                    <input id='degrees' type='checkbox' checked>
+                    <span class='checkmark'></span>
+                </label>
+                <label class='sliderContainer'>
+                    <p id="toleranceSliderText"> &nbsp Symmetry Tolerance: 10 pixels </p>
+                    <input id='toleranceSlider' class='slider' type='range' min='0' max='100' value='50'>
                 </label>
             </div>
         </div>
