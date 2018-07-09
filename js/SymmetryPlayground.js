@@ -8,11 +8,12 @@ window.onload = function() {
     var manipulationCanvas = $("#triangleArea")[0]; //element that will hold the rotated/fliped triangle
     var drawingCanvas = $('#drawingCanvas')[0]; //canvas for drawing symbols on modal after saving symmetry
 
-    
+
     var savedSymmetries = utils.LoadSymmetryList();
     for(var it = 0; it < savedSymmetries.length; it++) {
         $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(){
-            addMoveQueue(savedSymmetries[it]['moves'])
+            $('#replayModal').css('display', 'block');
+            // addMoveQueue(savedSymmetries[it]['moves']);
         });
     }
 
@@ -74,7 +75,11 @@ window.onload = function() {
     });
 
     $('#undoButton').click(function(){
-        manipulationTriangle.undo();
+        var keycount = 0;
+        while(keycount < 2){
+            manipulationTriangle.undo();
+            if(manipulationTriangle.moveQueue[manipulationTriangle.lastMove]) keycount++;
+        }
     });
 
     $('#resetButton').click(function(){
@@ -82,7 +87,11 @@ window.onload = function() {
     });
 
     $('#redoButton').click(function(){
-        manipulationTriangle.redo();
+        var keycount = 0;
+        while(keycount < 2){
+            manipulationTriangle.redo();
+            if(manipulationTriangle.moveQueue[manipulationTriangle.lastUndo]) keycount++;
+        }
     })
 
     //one liner that checks if you click outside a modal and closes if true
@@ -133,7 +142,7 @@ window.onload = function() {
         window.requestAnimationFrame(render);
         manipulationCanvas.getContext('2d').clearRect(0, 0, manipulationCanvas.width, manipulationCanvas.height);     //clears canvas
         triRenderer.render();
-        manipulationController.render();
+        //ManipulationCanvasController.render();
 
     }
 

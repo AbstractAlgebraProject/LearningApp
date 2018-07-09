@@ -7,10 +7,11 @@ window.onload = function() {
     var drawingCanvas = $('#drawingCanvas')[0]; //canvas for drawing symbols on modal after saving symmetry
 
     var savedSymmetries = utils.LoadSymmetryList();
+    console.log(savedSymmetries)
     for(var it = 0; it < savedSymmetries.length; it++) {
         $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(){
             document.getElementById('editModal').style.display = 'block';
-            document.getElementById('editModal').setAttribute('symbolIndex', this.id);
+            document.getElementById('editModal').setAttribute('symbolIndex', $.parseHTML(savedSymmetries[it-1]['elem'].id));
         });
     }
 
@@ -163,8 +164,8 @@ window.onload = function() {
 
     //deletes selected drawing
     $('#deleteDrawing').click(function(){
-      var imgName = $('#editModal').attr('symbolIndex');
-
+      var imgName = $('#editModal').attr('symbolId');
+      console.log(imgName)
       $('#' + imgName).remove();
       $('#editModal').css('display', 'none');
     });
@@ -209,7 +210,8 @@ window.onload = function() {
           .appendTo('#savedSymmetries')
           .click(function(){
             document.getElementById('editModal').style.display = 'block';
-            document.getElementById('editModal').setAttribute('symbolIndex', this.id);
+            document.getElementById('editModal').setAttribute('symbolIndex', 'savedSym' + savedSymmetries.length);
+            console.log('savedSym' + savedSymmetries.length);
         });
 
         savedSymmetries.push({'data' : data, 'moves' : manipulationTriangle.moveQueue, elem : $("#savedSym" + savedSymmetries.length).prop('outerHTML')});
