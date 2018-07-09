@@ -47,7 +47,7 @@ function TriangleFactory() {
         }
 
         //rotates triangle specified angle in degrees or radians, adding to moveQueue
-        tri.rotate = function(angle, point, radians=false, keystone=false) {
+        tri.rotate = function(angle, point, radians=false, ks=false) {
             if(angle != 0){
                 var move = {
                     rotate : true,
@@ -56,7 +56,8 @@ function TriangleFactory() {
                     u : [0, 0, 0],    //unit vector corresponding to axis through center
                     remaining : Math.abs(angle), //radians remaining before move completion
                     angle : angle,
-                    reverse : false
+                    reverse : false,
+                    keystone : ks
                 }
                 move.u = utils.normalize(move.p1, move.p2)
 
@@ -71,7 +72,6 @@ function TriangleFactory() {
                     tri.rotateInstant3d(move, move.remaining);
                     move.remaining = 0;
                 }
-                //console.log(move)
                 tri.moveQueue.push(move)
                 tri.lastMove = tri.moveQueue.length-1;
             }
@@ -79,7 +79,7 @@ function TriangleFactory() {
         }
 
         //flips triangle across line, adding to move Queue
-        tri.flip = function(point1, point2, keystone=false) {
+        tri.flip = function(point1, point2, ks=false) {
             var move = {
                 flip : true,
                 p1 : [point1.x, point1.y, 0],    //defining rotation axis on xy
@@ -87,59 +87,69 @@ function TriangleFactory() {
                 u : [0, 0, 0],                  //unit vector corresponding to rotation axis
                 remaining : Math.PI/2,               //radians remaining in move
                 angle : Math.PI/2,
-                inverse : false
+                inverse : false,
+                keystone: ks
             }
             move.u = utils.normalize(move.p1, move.p2);
-
             if(!tri.timeBound) {
                 tri.rotateInstant3d(move, move.remaining);
                 move.remaining = 0;
             }
             tri.moveQueue.push(move)
-            console.log(tri.moveQueue);
             tri.lastMove = tri.moveQueue.length-1;
         }
 
         tri.undo = function() {
             console.log("UNDO");
+            console.log(tri.moveQueue)
             while(tri.moveQueue.length) {
                 if(tri.lastMove === tri.moveQueue.length) tri.lastMove--;
                 var inverse = tri.moveQueue[tri.lastMove];
-                console.log("Index: ", tri.lastMove);
-                console.log("Moves: ", tri.moveQueue);
+                // console.log("Index: ", tri.lastMove);
+                // console.log("Move: ", tri.moveQueue[tri.lastMove]);
+                inverse.remove = false;
                 if(!inverse.inverse) {
                     inverse.remaining = inverse.angle; //translating back
                     inverse.inverse = true; //set inverse flag to trigger removal after animation
+                    inverse.remove = true;
+                    inverse.removed = true;
                     tri.moveQueue.push(inverse);
-                    tri.moveQueue.pop();
                     tri.lastUndo = tri.lastMove;
                     break;
                 }
                 tri.lastMove--;
             }
+            tri.lastMove--;
         }
 
         tri.redo = function(){
             console.log("REDO");
+            console.log(tri.moveQueue)
             while(tri.moveQueue.length){
                 if(tri.lastUndo === -1) tri.lastUndo++;
                 var inverse = tri.moveQueue[tri.lastUndo];
-                console.log("Index: ", tri.lastUndo);
-                console.log("Moves: ", tri.moveQueue);
+                // console.log("Index: ", tri.lastUndo);
+                // console.log("Moves: ", tri.moveQueue);
+                console.log(tri.lastUndo)
+                inverse.remove = false;
                 if(inverse.inverse){
                     inverse.remaining = inverse.angle;
                     inverse.inverse = false;
+                    inverse.toRemove = true;
+                    inverse.removed = true;
                     tri.moveQueue.push(inverse);
-                    tri.moveQueue.pop();
                     tri.lastMove = tri.lastUndo;
                     break;
                 }
                 tri.lastUndo++;
             }
+            tri.lastUndo++;
         }
 
         tri.addMove = function(move) {
             k = utils.DefaultorValue(move.keystone, false)
+            move.p1 = utils.toPoint(move.p1);
+            move.p2 = utils.toPoint(move.p2);
             if (move.inverse != true) {
                 if (move.rotate == true) {
                     tri.rotate(move.angle, move.p1, radians=true, keystone=k)
@@ -219,38 +229,43 @@ function TriangleFactory() {
             if(tri.timeBound) {
                 var ratio = elapsedMS/tri.animationSpeed    //how many complete rotations could occur in given elapsed time
                 var radians = 2 * Math.PI * ratio             //converting rotations to radians
+                var oneRemoved = false;
                 for (var i = 0; i < tri.moveQueue.length; i++) {
-                    var m = tri.moveQueue[i];   //get corresponding move
-                    var rotation = 0; //how many radians the 3d rotation will go
-                    if (m.remaining > 0) {  //if the move is not done being animated
-                        if (m.remaining >= radians) {
-                            rotation = radians
-                            m.remaining -= radians
-                            radians = 0
-                        } else {
-                            rotation = m.remaining
-                            radians -= m.remaining
-                            m.remaining = 0
-                        }
-                        if (m.inverse || m.reverse) {
-                            tri.rotateInstant3d(m, -1 * rotation)
-                            //tri.generateTextPoints();
-                        } else {
-                            tri.rotateInstant3d(m, rotation)
-                            //tri.generateTextPoints();
-                        }
+                    if(!oneRemoved){
+                        var m = tri.moveQueue[i];   //get corresponding move
+                        var rotation = 0; //how many radians the 3d rotation will go
+                        if (m.remaining > 0) {  //if the move is not done being animated
+                            if (m.remaining >= radians) {
+                                rotation = radians
+                                m.remaining -= radians
+                                radians = 0
+                            } else {
+                                rotation = m.remaining
+                                radians -= m.remaining
+                                m.remaining = 0
+                            }
+                            if (m.inverse || m.reverse) {
+                                tri.rotateInstant3d(m, -1 * rotation)
+                                //tri.generateTextPoints();
+                            } else {
+                                tri.rotateInstant3d(m, rotation)
+                                //tri.generateTextPoints();
+                            }
 
-                        if (radians <= 0){
-                            break;
-                        }
-                    } else {
-                        if (m.inverse) {
-                            //console.log("REMOVING...");
-                            //tri.moveQueue.splice(i, 1);
-                            break;
+                            if (radians <= 0){
+                                break;
+                            }
+                        } }else {
+                            if (m.remove && (i == tri.moveQueue.length-1)) {
+                                tri.moveQueue.splice(i, 1);
+                                console.log("gg")
+                                oneRemoved=false;
+                                //console.log("REMOVING...");
+                                //tri.moveQueue.splice(i, 1);
+                                break;
+                            }
                         }
                     }
-                }
             }
             else {
                 for (var i = 0; i < tri.moveQueue.length; i++) {

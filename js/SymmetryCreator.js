@@ -209,8 +209,13 @@ window.onload = function() {
       else{           //if saving a new symbol
         var data = drawingCanvas.toDataURL('image/png');  //stores canvas data in .png
         var uniqueID = String((new Date).getTime())
+        if(manipulationTriangle.moveQueue.length > 0){
+            manipulationTriangle.moveQueue[0].keystone = true;
+            manipulationTriangle.moveQueue[manipulationTriangle.moveQueue.length-1].keystone = true;
+            console.log(manipulationTriangle.moveQueue)
+        }
         $(document.createElement("img"))
-          .attr({src: data, id: uniqueID, moves: manipulationTriangle.moveQueue, elem: $("#" + uniqueID).prop('outerHTML'), width: $('#savedSymmetries').height() * .8, height: $('#savedSymmetries').height() * .8})
+          .attr({src: data, id: uniqueID, width: $('#savedSymmetries').height() * .8, height: $('#savedSymmetries').height() * .8}).attr("moves", JSON.stringify(manipulationTriangle.moveQueue))
           .appendTo('#savedSymmetries')
           .click(function(){
             document.getElementById('editModal').style.display = 'block';
@@ -218,10 +223,9 @@ window.onload = function() {
             console.log('savedSym' + savedSymmetries.length);
         });
 
-        savedSymmetries.push({'data' : data, 'moves' : manipulationTriangle.moveQueue, 'elem' : $("#" + uniqueID).prop('outerHTML'), 'id' : uniqueID});
+        savedSymmetries.push({'data' : data, 'moves' : JSON.stringify(manipulationTriangle.moveQueue), 'elem' : $("#" + uniqueID).prop('outerHTML'), 'id' : uniqueID});
         utils.StoreSymmetryList(savedSymmetries);
         //store symbol in new <img> tag
-
       }
       //toggle boolean, close modal and clear canvas
       editing = false;
