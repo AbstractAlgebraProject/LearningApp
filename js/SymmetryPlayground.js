@@ -8,14 +8,14 @@ window.onload = function() {
     var manipulationCanvas = $("#triangleArea")[0]; //element that will hold the rotated/fliped triangle
     var drawingCanvas = $('#drawingCanvas')[0]; //canvas for drawing symbols on modal after saving symmetry
 
-    
+
     var savedSymmetries = utils.LoadSymmetryList();
     for(var it = 0; it < savedSymmetries.length; it++) {
-        $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(){
-            savedSymmetries[it]['moves'][0]['keystone'] = true
-            savedSymmetries[it]['moves'][-1]['keystone'] = true
-            addMoveQueue(savedSymmetries[it]['moves'])
-        });
+        savedSymmetries[it]['moves'][0]['keystone'] = true
+        savedSymmetries[it]['moves'][-1]['keystone'] = true
+        $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(event){
+            addMoveQueue($("#" + event.target.id).attr("moves"))
+        }).attr("moves", savedSymmetries[it]['moves']);
     }
 
     manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
