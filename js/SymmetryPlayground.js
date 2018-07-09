@@ -11,21 +11,20 @@ window.onload = function() {
 
     var savedSymmetries = utils.LoadSymmetryList();
     console.log(savedSymmetries);
-    var double = false;
+    var double = 0;
     for(var it = 0; it < savedSymmetries.length; it++) {
         if(it == savedSymmetries.length){it--; break}
         if (savedSymmetries[it]['moves'].length > 0) {
             savedSymmetries[it]['moves'][0]['keystone'] = true;
             savedSymmetries[it]['moves'][(savedSymmetries[it]['moves'].length-1)]['keystone'] = true;
         }
-        $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(event){
-            if(!double){
+        console.log(it)
+        $("#savedSymmetries").append(savedSymmetries[it]['elem']).unbind('click').on('click', (function(event){
                 data = $("#" + event.target.id).attr("moves");
                 console.log(it);
                 addMoveQueue(JSON.parse(data));
-                double = true;
-            }else{double = false;}
-        }).attr("moves", savedSymmetries[it]['moves']);
+                double = 1;
+        })).attr("moves", savedSymmetries[it]['moves']);
     }
 
     manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
@@ -85,7 +84,7 @@ window.onload = function() {
 
     $('#undoButton').click(function(){
         var keycount = 0;
-        while(keycount < 2){
+        while(keycount < 3){
             console.log(keycount, manipulationTriangle.moveQueue[manipulationTriangle.lastMove])
             if(manipulationTriangle.moveQueue[manipulationTriangle.lastMove].keystone) keycount++;
             manipulationTriangle.undo();
@@ -94,11 +93,12 @@ window.onload = function() {
 
     $('#resetButton').click(function(){
         manipulationTriangle.reset();
+        savedSymmetries = [];
     });
 
     $('#redoButton').click(function(){
         var keycount = 0;
-        while(keycount < 2){
+        while(keycount < 3){
             console.log(keycount, manipulationTriangle.lastUndo)
             console.log(manipulationTriangle.moveQueue)
             console.log(manipulationTriangle.moveQueue[manipulationTriangle.lastUndo])
@@ -141,8 +141,8 @@ window.onload = function() {
            console.log(sym);
            for(move in sym['moves']){
                console.log(move);
-               move['point1'] = calcTranslateDiff(move['point1']);
-               move['point2'] = calcTranslateDiff(move['point2']);
+               move['point1'] = calcTranslateDiff(utils.toPoint(move['point1']));
+               move['point2'] = calcTranslateDiff(utils.toPoint(move['point2']));
            }
        }
 
