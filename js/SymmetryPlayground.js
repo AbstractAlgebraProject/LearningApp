@@ -11,10 +11,13 @@ window.onload = function() {
 
     var savedSymmetries = utils.LoadSymmetryList();
     for(var it = 0; it < savedSymmetries.length; it++) {
-        savedSymmetries[it]['moves'][0]['keystone'] = true
-        savedSymmetries[it]['moves'][-1]['keystone'] = true
+        if (savedSymmetries[it]['moves'].length > 0) {
+            savedSymmetries[it]['moves'][0]['keystone'] = true
+            savedSymmetries[it]['moves'][(savedSymmetries[it]['moves'].length-1)]['keystone'] = true
+        }
         $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(event){
-            addMoveQueue($("#" + event.target.id).attr("moves"))
+            data = $("#" + event.target.id).attr("moves")
+            addMoveQueue(JSON.parse(data))
         }).attr("moves", savedSymmetries[it]['moves']);
     }
 
