@@ -1,3 +1,5 @@
+
+
 window.onload = function() {
     var that = this;
     var triFactory = new TriangleFactory();
@@ -9,13 +11,9 @@ window.onload = function() {
     var savedSymmetries = utils.LoadSymmetryList();
     for(var it = 0; it < savedSymmetries.length; it++) {
         $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(){
-            document.getElementById('editModal').style.display = 'block';
-            document.getElementById('editModal').setAttribute('symbolIndex', this.id);
+            addMoveQueue(savedSymmetries[it]['moves'])
         });
     }
-
-    var editing = false;    //dumbguy boolean to determine whether drawn symbol is new or edited
-    var drawingController = new DrawingCanvasController(drawingCanvas); //controller to manage drawing on modal window
 
     manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
     manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
@@ -27,11 +25,21 @@ window.onload = function() {
         segmented : true,
         timeBound: true,
         pointLabels: true,
-        baseColor: "#42a4e5"
+        baseColor: "#42a4e5",
+        animationSpeed : 5000
     }
 
     var manipulationTriangle = new triFactory.produceTriangle(triConfig);    //triangle for canvas that will be manipulated
     manipulationTriangle.reset();
+
+    function addMoveQueue(moves) {
+        for(var i = 0; i < moves.length; i++) {
+            if(i ==0) { //first
+
+            } else if (i+1 )
+            manipulationTriangle.addMove(moves[i])
+        }
+    }
 
 
     triRenderer.addRenderPair(manipulationTriangle, manipulationCanvas);    //set triangle and canvas set to be rendered
@@ -106,10 +114,10 @@ window.onload = function() {
     $('body')[0].onresize = function(){
        manipulationTriangle.translate(calcTranslateDiff(manipulationTriangle.anchorPoints[0]));
 
+
        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
        manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
-       drawingCanvas.width = $('#drawingContainer')[0].clientWidth;
-       drawingCanvas.height = $('#drawingContainer')[0].clientHeight;
+       ManipulationCanvasController.canvas = manipulationCanvas;
        //console.log(manipulationCanvas.width);
        //console.log(manipulationCanvas.height);
       //
@@ -125,6 +133,7 @@ window.onload = function() {
         manipulationCanvas.getContext('2d').clearRect(0, 0, manipulationCanvas.width, manipulationCanvas.height);     //clears canvas
         triRenderer.render();
         manipulationController.render();
+
     }
 
     render();

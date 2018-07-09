@@ -50,6 +50,7 @@ function TriangleFactory() {
         tri.rotate = function(angle, point, radians=false) {
             if(angle != 0){
                 var move = {
+                    rotate : true,
                     p1 : [point.x, point.y, -1], //defining rotation axis on z
                     p2 : [point.x, point.y, 1],
                     u : [0, 0, 0],    //unit vector corresponding to axis through center
@@ -80,6 +81,7 @@ function TriangleFactory() {
         //flips triangle across line, adding to move Queue
         tri.flip = function(point1, point2) {
             var move = {
+                flip : true,
                 p1 : [point1.x, point1.y, 0],    //defining rotation axis on xy
                 p2 : [point2.x, point2.y, 0],
                 u : [0, 0, 0],                  //unit vector corresponding to rotation axis
@@ -133,6 +135,16 @@ function TriangleFactory() {
                     break;
                 }
                 tri.lastUndo++;
+            }
+        }
+
+        tri.addMove = function(move) {
+            if (move.inverse != true) {
+                if (move.rotate == true) {
+                    tri.rotate(move.angle, move.p1, radians=true)
+                } else if (move.flip == true) {
+                    tri.flip(move.p1, move.p2)
+                }
             }
         }
 
