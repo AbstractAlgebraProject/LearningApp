@@ -7,10 +7,11 @@ window.onload = function() {
     var drawingCanvas = $('#drawingCanvas')[0]; //canvas for drawing symbols on modal after saving symmetry
 
     var savedSymmetries = utils.LoadSymmetryList();
+    print(savedSymmetries)
     for(var it = 0; it < savedSymmetries.length; it++) {
-        $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(){
+        $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(event){
             document.getElementById('editModal').style.display = 'block';
-            document.getElementById('editModal').setAttribute('symbolIndex', this.id);
+            document.getElementById('editModal').setAttribute('symbolIndex', event.target.id);
         });
     }
 
@@ -164,7 +165,9 @@ window.onload = function() {
     //deletes selected drawing
     $('#deleteDrawing').click(function(){
       var imgName = $('#editModal').attr('symbolIndex');
-
+      idx = savedSymmetries.findIndex(x => x.id == parseInt(imgName))
+      savedSymmetries.splice(idx, 1)
+      utils.StoreSymmetryList(savedSymmetries)
       $('#' + imgName).remove();
       $('#editModal').css('display', 'none');
     });
@@ -203,16 +206,16 @@ window.onload = function() {
 
       else{           //if saving a new symbol
         var data = drawingCanvas.toDataURL('image/png');  //stores canvas data in .png
-
+        var uniqueID = String((new Date)(d.getTime()))
         $(document.createElement("img"))
-          .attr({src: data, id: 'savedSym' + savedSymmetries.length, width: $('#savedSymmetries').height() * .8, height: $('#savedSymmetries').height() * .8})
+          .attr({src: data, id: 'savedSym' + uniqueID, width: $('#savedSymmetries').height() * .8, height: $('#savedSymmetries').height() * .8})
           .appendTo('#savedSymmetries')
           .click(function(){
             document.getElementById('editModal').style.display = 'block';
             document.getElementById('editModal').setAttribute('symbolIndex', this.id);
         });
 
-        savedSymmetries.push({'data' : data, 'moves' : manipulationTriangle.moveQueue, elem : $("#savedSym" + savedSymmetries.length).prop('outerHTML')});
+        savedSymmetries.push({'data' : data, 'moves' : manipulationTriangle.moveQueue, elem : $("#savedSym" + savedSymmetries.length).prop('outerHTML'), 'id' : uniqueID});
         utils.StoreSymmetryList(savedSymmetries);
         //store symbol in new <img> tag
 
