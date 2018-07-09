@@ -163,8 +163,11 @@ window.onload = function() {
         window.requestAnimationFrame(render);
         manipulationCanvas.getContext('2d').clearRect(0, 0, manipulationCanvas.width, manipulationCanvas.height);     //clears canvas
         triRenderer.render();
+<<<<<<< HEAD
+=======
         //ManipulationCanvasController.render();
 
+>>>>>>> 4b6df87c53a14cd7af4cf6779171b252dbdbdd97
     }
 
     render();
