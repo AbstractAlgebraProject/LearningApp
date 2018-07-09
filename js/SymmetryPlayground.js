@@ -10,15 +10,21 @@ window.onload = function() {
 
 
     var savedSymmetries = utils.LoadSymmetryList();
+    console.log(savedSymmetries);
+    var double = false;
     for(var it = 0; it < savedSymmetries.length; it++) {
+        if(it == savedSymmetries.length){it--; break}
         if (savedSymmetries[it]['moves'].length > 0) {
-            savedSymmetries[it]['moves'][0]['keystone'] = true
-            savedSymmetries[it]['moves'][(savedSymmetries[it]['moves'].length-1)]['keystone'] = true
+            savedSymmetries[it]['moves'][0]['keystone'] = true;
+            savedSymmetries[it]['moves'][(savedSymmetries[it]['moves'].length-1)]['keystone'] = true;
         }
         $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(event){
-            data = $("#" + event.target.id).attr("moves")
-            dataJSON = JSON.parse(data)
-            addMoveQueue(JSON.parse(data))
+            if(!double){
+                data = $("#" + event.target.id).attr("moves");
+                console.log(it);
+                addMoveQueue(JSON.parse(data));
+                double = true;
+            }else{double = false;}
         }).attr("moves", savedSymmetries[it]['moves']);
     }
 
@@ -41,9 +47,7 @@ window.onload = function() {
 
     function addMoveQueue(moves) {
         for(var i = 0; i < moves.length; i++) {
-            if(i ==0) { //first
-
-            } else if (i+1 )
+            console.log(moves[i])
             manipulationTriangle.addMove(moves[i])
         }
     }
@@ -80,7 +84,12 @@ window.onload = function() {
     });
 
     $('#undoButton').click(function(){
-        manipulationTriangle.undo();
+        var keycount = 0;
+        while(keycount < 2){
+            console.log(keycount, manipulationTriangle.moveQueue[manipulationTriangle.lastMove])
+            if(manipulationTriangle.moveQueue[manipulationTriangle.lastMove].keystone) keycount++;
+            manipulationTriangle.undo();
+        }
     });
 
     $('#resetButton').click(function(){
@@ -88,7 +97,14 @@ window.onload = function() {
     });
 
     $('#redoButton').click(function(){
-        manipulationTriangle.redo();
+        var keycount = 0;
+        while(keycount < 2){
+            console.log(keycount, manipulationTriangle.lastUndo)
+            console.log(manipulationTriangle.moveQueue)
+            console.log(manipulationTriangle.moveQueue[manipulationTriangle.lastUndo])
+            if(manipulationTriangle.moveQueue[manipulationTriangle.lastUndo].keystone) keycount++;
+            manipulationTriangle.redo();
+        }
     })
 
     //one liner that checks if you click outside a modal and closes if true
@@ -121,10 +137,18 @@ window.onload = function() {
     $('body')[0].onresize = function(){
        manipulationTriangle.translate(calcTranslateDiff(manipulationTriangle.anchorPoints[0]));
 
+       for(sym in savedSymmetries){
+           console.log(sym);
+           for(move in sym['moves']){
+               console.log(move);
+               move['point1'] = calcTranslateDiff(move['point1']);
+               move['point2'] = calcTranslateDiff(move['point2']);
+           }
+       }
 
        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
        manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
-       ManipulationCanvasController.canvas = manipulationCanvas;
+       //ManipulationCanvasController.canvas = manipulationCanvas;
        //console.log(manipulationCanvas.width);
        //console.log(manipulationCanvas.height);
       //
@@ -139,6 +163,11 @@ window.onload = function() {
         window.requestAnimationFrame(render);
         manipulationCanvas.getContext('2d').clearRect(0, 0, manipulationCanvas.width, manipulationCanvas.height);     //clears canvas
         triRenderer.render();
+<<<<<<< HEAD
+=======
+        //ManipulationCanvasController.render();
+
+>>>>>>> 4b6df87c53a14cd7af4cf6779171b252dbdbdd97
     }
 
     render();

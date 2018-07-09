@@ -7,9 +7,11 @@ window.onload = function() {
     var drawingCanvas = $('#drawingCanvas')[0]; //canvas for drawing symbols on modal after saving symmetry
 
     var savedSymmetries = utils.LoadSymmetryList();
+
     for(var it = 0; it < savedSymmetries.length; it++) {
         $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(event){
             document.getElementById('editModal').style.display = 'block';
+
             document.getElementById('editModal').setAttribute('symbolIndex', event.target.id);
         });
     }
@@ -172,6 +174,7 @@ window.onload = function() {
       idx = savedSymmetries.findIndex(x => x.id == parseInt(imgName))
       savedSymmetries.splice(idx, 1)
       utils.StoreSymmetryList(savedSymmetries)
+
       $('#' + imgName).remove();
       $('#editModal').css('display', 'none');
     });
@@ -211,18 +214,23 @@ window.onload = function() {
       else{           //if saving a new symbol
         var data = drawingCanvas.toDataURL('image/png');  //stores canvas data in .png
         var uniqueID = String((new Date).getTime())
+        if(manipulationTriangle.moveQueue.length > 0){
+            manipulationTriangle.moveQueue[0].keystone = true;
+            manipulationTriangle.moveQueue[manipulationTriangle.moveQueue.length-1].keystone = true;
+            console.log(manipulationTriangle.moveQueue)
+        }
         $(document.createElement("img"))
-          .attr({src: data, id: uniqueID, width: $('#savedSymmetries').height() * .8, height: $('#savedSymmetries').height() * .8}).attr("moves", manipulationTriangle.moveQueue)
+          .attr({src: data, id: uniqueID, width: $('#savedSymmetries').height() * .8, height: $('#savedSymmetries').height() * .8}).attr("moves", JSON.stringify(manipulationTriangle.moveQueue))
           .appendTo('#savedSymmetries')
           .click(function(){
             document.getElementById('editModal').style.display = 'block';
-            document.getElementById('editModal').setAttribute('symbolIndex', this.id);
+            document.getElementById('editModal').setAttribute('symbolIndex', 'savedSym' + savedSymmetries.length);
+            console.log('savedSym' + savedSymmetries.length);
         });
 
         savedSymmetries.push({'data' : data, 'moves' : JSON.stringify(manipulationTriangle.moveQueue), 'elem' : $("#" + uniqueID).prop('outerHTML'), 'id' : uniqueID});
         utils.StoreSymmetryList(savedSymmetries);
         //store symbol in new <img> tag
-
       }
       //toggle boolean, close modal and clear canvas
       editing = false;
