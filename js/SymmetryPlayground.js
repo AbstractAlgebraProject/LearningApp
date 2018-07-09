@@ -10,10 +10,14 @@ window.onload = function() {
 
 
     var savedSymmetries = utils.LoadSymmetryList();
+    console.log(savedSymmetries);
     for(var it = 0; it < savedSymmetries.length; it++) {
-        $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(){
+        $("#savedSymmetries").append(savedSymmetries[it]['id']).click(function(){
             $('#replayModal').css('display', 'block');
             // addMoveQueue(savedSymmetries[it]['moves']);
+            savedSymmetries[it]['moves'][0]['keystone'] = true
+            savedSymmetries[it]['moves'][-1]['keystone'] = true
+            addMoveQueue(savedSymmetries[it]['moves'])
         });
     }
 

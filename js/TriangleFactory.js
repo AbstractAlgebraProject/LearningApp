@@ -47,7 +47,7 @@ function TriangleFactory() {
         }
 
         //rotates triangle specified angle in degrees or radians, adding to moveQueue
-        tri.rotate = function(angle, point, radians=false) {
+        tri.rotate = function(angle, point, radians=false, keystone=false) {
             if(angle != 0){
                 var move = {
                     rotate : true,
@@ -79,7 +79,7 @@ function TriangleFactory() {
         }
 
         //flips triangle across line, adding to move Queue
-        tri.flip = function(point1, point2) {
+        tri.flip = function(point1, point2, keystone=false) {
             var move = {
                 flip : true,
                 p1 : [point1.x, point1.y, 0],    //defining rotation axis on xy
@@ -139,11 +139,12 @@ function TriangleFactory() {
         }
 
         tri.addMove = function(move) {
+            k = utils.DefaultorValue(move.keystone, false)
             if (move.inverse != true) {
                 if (move.rotate == true) {
-                    tri.rotate(move.angle, move.p1, radians=true)
+                    tri.rotate(move.angle, move.p1, radians=true, keystone=k)
                 } else if (move.flip == true) {
-                    tri.flip(move.p1, move.p2)
+                    tri.flip(move.p1, move.p2, keystone=k)
                 }
             }
         }
