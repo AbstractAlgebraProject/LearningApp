@@ -14,12 +14,10 @@ window.onload = function() {
     for(var it = 0; it < savedSymmetries.length; it++) {
         savedSymmetries[it]['moves'][0]['keystone'] = true
         savedSymmetries[it]['moves'][savedSymmetries[it]['moves'].length-1]['keystone'] = true
-        $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(){
-            $('#replayModal').css('display', 'block');
-            // addMoveQueue(savedSymmetries[it]['moves']);
-
-            addMoveQueue(savedSymmetries[it-1]['moves'])
-        });
+        $("#savedSymmetries").append(savedSymmetries[it]['elem']).click(function(event){
+            console.log($("#" + event.target.id))
+            addMoveQueue()
+        }).attr({moves: savedSymmetries[it]['moves']});
     }
 
     manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
