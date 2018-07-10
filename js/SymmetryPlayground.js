@@ -11,19 +11,17 @@ window.onload = function() {
 
     var savedSymmetries = utils.LoadSymmetryList();
     console.log(savedSymmetries);
-    var double = 0;
+
     for(var it = 0; it < savedSymmetries.length; it++) {
         if(it == savedSymmetries.length){it--; break}
         if (savedSymmetries[it]['moves'].length > 0) {
             savedSymmetries[it]['moves'][0]['keystone'] = true;
             savedSymmetries[it]['moves'][(savedSymmetries[it]['moves'].length-1)]['keystone'] = true;
         }
-        console.log(it)
         $("#savedSymmetries").append(savedSymmetries[it]['elem']).unbind('click').on('click', (function(event){
                 data = $("#" + event.target.id).attr("moves");
-                console.log(it);
+                console.log(data);
                 addMoveQueue(JSON.parse(data));
-                double = 1;
         })).attr("moves", savedSymmetries[it]['moves']);
     }
 
@@ -84,7 +82,7 @@ window.onload = function() {
 
     $('#undoButton').click(function(){
         var keycount = 0;
-        while(keycount < 3){
+        while(keycount < 2){
             console.log(keycount, manipulationTriangle.moveQueue[manipulationTriangle.lastMove])
             if(manipulationTriangle.moveQueue[manipulationTriangle.lastMove].keystone) keycount++;
             manipulationTriangle.undo();
@@ -98,7 +96,7 @@ window.onload = function() {
 
     $('#redoButton').click(function(){
         var keycount = 0;
-        while(keycount < 3){
+        while(keycount < 2){
             console.log(keycount, manipulationTriangle.lastUndo)
             console.log(manipulationTriangle.moveQueue)
             console.log(manipulationTriangle.moveQueue[manipulationTriangle.lastUndo])
@@ -136,15 +134,30 @@ window.onload = function() {
 
     $('body')[0].onresize = function(){
        manipulationTriangle.translate(calcTranslateDiff(manipulationTriangle.anchorPoints[0]));
+       var newMoves = [];
+       for(i = 0; i < savedSymmetries.length; i++){
+           for(j = 0; j < JSON.parse(savedSymmetries[i]['moves']).length; j++){
+               var newMove = JSON.parse(savedSymmetries[i]['moves'])[j];
+               newMove.p1 = utils.toArray(resizePoint(utils.toPoint(newMove.p1)));
+               newMove.p2 = utils.toArray(resizePoint(utils.toPoint(newMove.p2)));
+               newMoves.push(newMove);
+            }
+            savedSymmetries[i]['moves'] = JSON.stringify(newMoves);
+            $('#savedSymmetries').each(function(index){
+                $(this).attr('moves', savedSymmetries[index]['moves'])
+                console.log($(this).attr("moves"))
+                $(this).unbind('click');
+                $(this).unbind('click').on('click', function(event){
+                    data = $(this).attr("moves");
+                    console.log(data);
+                    addMoveQueue(JSON.parse(data));
+                });
 
-       for(sym in savedSymmetries){
-           console.log(sym);
-           for(move in sym['moves']){
-               console.log(move);
-               move['point1'] = calcTranslateDiff(utils.toPoint(move['point1']));
-               move['point2'] = calcTranslateDiff(utils.toPoint(move['point2']));
-           }
+                console.log(savedSymmetries)
+                console.log($('#savedSymmetries'))
+            });
        }
+
 
        manipulationCanvas.width = $('#drawingArea')[0].clientWidth;
        manipulationCanvas.height = $('#drawingArea')[0].clientHeight;
@@ -163,11 +176,6 @@ window.onload = function() {
         window.requestAnimationFrame(render);
         manipulationCanvas.getContext('2d').clearRect(0, 0, manipulationCanvas.width, manipulationCanvas.height);     //clears canvas
         triRenderer.render();
-<<<<<<< HEAD
-=======
-        //ManipulationCanvasController.render();
-
->>>>>>> 4b6df87c53a14cd7af4cf6779171b252dbdbdd97
     }
 
     render();
