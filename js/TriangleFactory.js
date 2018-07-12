@@ -104,15 +104,18 @@ function TriangleFactory() {
             console.log(tri.moveQueue)
             while(tri.moveQueue.length) {
                 if(tri.lastMove === tri.moveQueue.length) tri.lastMove--;
-                var inverse = tri.moveQueue[tri.lastMove];
+                var inverse = Object.assign({},tri.moveQueue[tri.lastMove]);
                 // console.log("Index: ", tri.lastMove);
                 // console.log("Move: ", tri.moveQueue[tri.lastMove]);
-                inverse.remove = false;
                 if(!inverse.inverse) {
-                    inverse.remaining = inverse.angle; //translating back
+                    inverse.remaining = Math.abs(inverse.angle); //translating back
                     inverse.inverse = true; //set inverse flag to trigger removal after animation
-                    inverse.remove = true;
-                    inverse.removed = true;
+                    if(inverse.reverse){
+                        inverse.reverse = false;
+                        inverse.inverse = false;
+                    }
+                    tri.moveQueue[tri.lastMove].inverse = true;
+                    inverse.toRemove = true;
                     tri.moveQueue.push(inverse);
                     tri.lastUndo = tri.lastMove;
                     break;
@@ -127,16 +130,19 @@ function TriangleFactory() {
             console.log(tri.moveQueue)
             while(tri.moveQueue.length){
                 if(tri.lastUndo === -1) tri.lastUndo++;
-                var inverse = tri.moveQueue[tri.lastUndo];
+                var inverse = Object.assign({}, tri.moveQueue[tri.lastUndo]);
                 // console.log("Index: ", tri.lastUndo);
                 // console.log("Moves: ", tri.moveQueue);
                 console.log(tri.lastUndo)
-                inverse.remove = false;
                 if(inverse.inverse){
-                    inverse.remaining = inverse.angle;
+                    inverse.remaining = Math.abs(inverse.angle);
                     inverse.inverse = false;
+                    if(inverse.reverse){
+                        inverse.reverse = false;
+                        inverse.inverse = true;
+                    }
+                    tri.moveQueue[tri.lastUndo].inverse = false;
                     inverse.toRemove = true;
-                    inverse.removed = true;
                     tri.moveQueue.push(inverse);
                     tri.lastMove = tri.lastUndo;
                     break;
@@ -229,9 +235,7 @@ function TriangleFactory() {
             if(tri.timeBound) {
                 var ratio = elapsedMS/tri.animationSpeed    //how many complete rotations could occur in given elapsed time
                 var radians = 2 * Math.PI * ratio             //converting rotations to radians
-                var oneRemoved = false;
                 for (var i = 0; i < tri.moveQueue.length; i++) {
-                    if(!oneRemoved){
                         var m = tri.moveQueue[i];   //get corresponding move
                         var rotation = 0; //how many radians the 3d rotation will go
                         if (m.remaining > 0) {  //if the move is not done being animated
@@ -255,11 +259,10 @@ function TriangleFactory() {
                             if (radians <= 0){
                                 break;
                             }
-                        } }else {
-                            if (m.remove && (i == tri.moveQueue.length-1)) {
+                        }else {
+                            if (m.toRemove) {
                                 tri.moveQueue.splice(i, 1);
                                 console.log("gg")
-                                oneRemoved=false;
                                 //console.log("REMOVING...");
                                 //tri.moveQueue.splice(i, 1);
                                 break;
